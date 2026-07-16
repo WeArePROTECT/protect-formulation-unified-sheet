@@ -5,6 +5,9 @@ __pycache__/
 # Raw internal meeting material — not for publication
 team_meetings/
 
+# Internal message drafts (Slack / team correspondence), not for publication
+correspondence/
+
 # OS
 .DS_Store
 

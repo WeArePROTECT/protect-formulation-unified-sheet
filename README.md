@@ -29,6 +29,9 @@ or server access. To build it yourself from source: `bash build/run_all.sh` -> `
 | **Reserved** (blank, fill later) | tissue, mouse, airway ubiquity |
 | **Decision** | verdict + reason — *filled once the team sets the thresholds* |
 
+> **Every column explained:** see **`docs/gold_data_dictionary.md`** for what each column means, how it was
+> derived, and the values it can take. New researchers should start there.
+
 ## The three gates (Adam's "theory of operations")
 Every column is a measurable proxy for one of three questions a formulation must pass:
 **SAFETY** (doesn't harm the patient) · **VIABILITY** (we can grow/make it) · **COMPETITION** (excludes PA).
@@ -82,6 +85,6 @@ This is built to change. Tell us — anything from "call it resistant at 30%, no
 - `README.md` — this file · `PROJECT_PLAN.md` — fuller plan + history
 - `build/` — the pipeline (`run_all.sh` runs it) · `config/thresholds.yaml` — team-owned settings
 - `data/` — `bronze/BRONZE_MANIFEST.md` (source pointers, tracked) + `reference/species_safety.csv` (tracked); the roster / `silver/` / `gold/` tables are **generated, not in the repo** (run `run_all.sh`)
-- `docs/` — `plain_english_guide.md`, `data_readiness_scorecard.md`, `decisions/`, and the message drafts
+- `docs/` — `gold_data_dictionary.md` (every column explained), `plain_english_guide.md`, `data_readiness_scorecard.md`, `syk_phenotype_sheet_map.md`, `decisions/`
 
 *Generated data in `data/` is reproducible from the code via `bash build/run_all.sh`.*
