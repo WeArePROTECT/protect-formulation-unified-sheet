@@ -11,6 +11,9 @@ correspondence/
 # OS
 .DS_Store
 
+# Generated Word docs (regenerate from the .md with pandoc); the .md stays the source of truth
+*.docx
+
 # ---------------------------------------------------------------------------
 # NO GENERATED DATA ON GITHUB. Everything below rebuilds from the code with
 # `bash build/run_all.sh`. Kept tracked: data/bronze/BRONZE_MANIFEST.md (pointers,

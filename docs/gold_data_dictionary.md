@@ -3,7 +3,8 @@
 Plain-language reference for every column in the decision card (`data/gold/gold_unified_sheet.xlsx` / `.csv`).
 One row = one strain. Read this to orient yourself before digging into the numbers.
 
-**Two things to keep in mind everywhere:**
+**A few things to keep in mind everywhere:**
+
 - **PRELIMINARY.** Sun-Young's wet-lab data is still pre-QC, so treat values as directional.
 - **Blank cell = "not screened yet," not "no result."** Species and genomic AMR cover nearly all strains;
   hemolysis, measured AMR, viability, and competition cover only the subset screened so far.
