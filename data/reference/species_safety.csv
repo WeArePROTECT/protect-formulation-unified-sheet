@@ -1,0 +1,18 @@
+species,level,bsl_level,reason,source
+Pseudomonas aeruginosa,pathogen,2,target pathogen (the one we exclude),interim-curated
+Staphylococcus aureus,pathogen,2,VAP pathogen,interim-curated
+Klebsiella pneumoniae,pathogen,2,VAP pathogen,interim-curated
+Acinetobacter baumannii,pathogen,2,VAP pathogen,interim-curated
+Achromobacter xylosoxidans,pathogen,2,CF pathogen,interim-curated
+Stenotrophomonas maltophilia,pathogen,2,CF pathogen,interim-curated
+Burkholderia cepacia,pathogen,2,CF pathogen complex,interim-curated
+Burkholderia cenocepacia,pathogen,2,CF pathogen complex,interim-curated
+Citrobacter koseri,opportunistic,2,opportunistic pathogen; team-flagged inappropriate probiotic,interim-curated (team 2026-06)
+Escherichia coli,opportunistic,2,opportunistic pathogen; team-flagged,interim-curated (team 2026-06)
+Pseudomonas fulva,opportunistic,2,emerging opportunistic pathogen; team-flagged,interim-curated (team 2026-06)
+Acinetobacter,review,,opportunistic-prone genus; needs biologist review,interim-watchlist
+Klebsiella,review,,opportunistic-prone genus; needs biologist review,interim-watchlist
+Citrobacter,review,,opportunistic-prone genus; needs biologist review,interim-watchlist
+Enterobacter,review,,opportunistic-prone genus; needs biologist review,interim-watchlist
+Serratia,review,,opportunistic-prone genus; needs biologist review,interim-watchlist
+Ralstonia,review,,opportunistic-prone genus; needs biologist review,interim-watchlist

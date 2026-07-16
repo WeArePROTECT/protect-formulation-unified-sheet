@@ -1,0 +1,47 @@
+# =============================================================================
+# thresholds.yaml  —  TEAM-OWNED SETTINGS
+# =============================================================================
+# Every provisional cutoff and policy choice in the unified-sheet build lives HERE,
+# in one place, so it is trivial to change. These are the DATA-SCIENCE team's
+# best-guess defaults — the biologists/experimentalists OWN these values.
+#
+# To change how any column is computed: edit a value below and re-run
+#     bash build/run_all.sh
+# The whole card recalculates. Nothing in the code is hard-coded; this file wins.
+#
+# Scientists: if you want a column computed differently (a different cutoff, a
+# different way to combine replicates, a stricter safety rule), tell Spencer or edit
+# the value here. The build adapts to you — you do not adapt to it.
+# =============================================================================
+
+safety:
+  amr_measured:
+    # A drug counts as "resisted" if the strain still grows to at least this % of its
+    # untreated growth despite the drug. Higher = stricter (fewer strains called resistant).
+    resistance_cutoff_pct: 50
+    # Quality gate: the untreated control must have grown at least this much (delta OD600),
+    # else we can't trust that replicate and drop it. (Sun-Young's rule.)
+    qc_min_delta_od: 0.1
+
+viability:
+  # A strain "grows in SCFM" if its background-subtracted SCFM OD600 at 72h is at least this.
+  scfm_grow_min_od: 0.1
+  # A "no-grow in SCFM" is only trusted if the strain grew at least this much in rich media
+  # (BHIS); otherwise it's just unculturable here and we mark the result inconclusive.
+  qc_rich_media_min_od: 0.1
+
+competition:
+  # How repeat wells for the same team+pathogen collapse to one number: median | mean | max.
+  # median is robust to the pre-QC outliers in the current data.
+  replicate_aggregation: median
+  # The pathogen the headline PA columns are computed against.
+  headline_reporter: PA14_KEH108_Reporter
+  # The reporting line used in summaries ("clears >= X% PA").
+  report_bar_pct: 50
+
+gold:
+  # How a strain's several isolates combine into one strain-level value:
+  #   safety      = worst_case  (flag the strain if ANY isolate looks unsafe)
+  #   competition = best_case   (show the strain's strongest demonstrated result)
+  safety_aggregation: worst_case
+  competition_aggregation: best_case

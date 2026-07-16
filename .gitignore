@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+
+# Raw internal meeting material — not for publication
+team_meetings/
+
+# OS
+.DS_Store
+
+# ---------------------------------------------------------------------------
+# NO GENERATED DATA ON GITHUB. Everything below rebuilds from the code with
+# `bash build/run_all.sh`. Kept tracked: data/bronze/BRONZE_MANIFEST.md (pointers,
+# not data) and data/reference/species_safety.csv (curated safety reference the code needs).
+# ---------------------------------------------------------------------------
+*.parquet
+data/reference/identity_isolates.csv
+data/reference/identity_strains.csv
+data/silver/
+data/gold/
