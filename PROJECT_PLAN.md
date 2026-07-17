@@ -208,5 +208,35 @@ Output: a ranked candidate shortlist + a `decision_register` reason per strain. 
   isolates; 3,813 with ≥1 AMR gene). All in `data/silver/`.
 - **Q7 code:** borrowed the validated ideas (frozenset dedup + best-inhibition aggregation), writing competition FRESH.
 
-**Next:** `silver_competition.py` (fresh; per-strain PA knock-down + synergy) → `gold_unified_sheet.py`
-(strain-level card, Safety + Competition) → strawman shortlist for Adam's Thu 2026-07-16 check-in.
+**2026-07-16 — Competition gate + first gold card:** `silver_competition.py` (fresh; per-strain best-solo /
+best-team PA knock-down, best partner, signed synergy; + a `formulations` table) and `gold_unified_sheet.py`
+(strain-level card). Decision logs added in `docs/decisions/`.
+
+**2026-07-17 — Viability gate, config-as-data, candidate refinement, ship:**
+- **Config-as-data:** all thresholds moved to `config/thresholds.yaml` (team-owned); AMR + competition refactored to read it.
+- **Viability gate:** `silver_growth_endpoint.py` (SCFM grow/no-grow + mucin lift; 97 of 764 grow in SCFM).
+- **Candidate flag** now from `data/reference/species_safety.csv` (interim; 41 pathogens excluded, 10 review, 729 unreviewed).
+- **Shipped:** GitHub repo `WeArePROTECT/protect-formulation-unified-sheet` (NO data on GitHub); card + Word
+  data dictionary on Google Drive; team announced. Message drafts moved to gitignored `correspondence/`.
+- **Emma metagenomics integration SCOPED + unblocked** (`docs/emma_metagenomics_integration_plan.md`).
+
+---
+
+## 9. Status at wind-down (2026-07-17) and next steps
+
+**Where it stands:** v0 pipeline built, verified, and shipped. 780 strains, all three gates populated (Safety +
+Viability + Competition), 167 candidates have all three measured. Preliminary (SYK pre-QC). Full current-state
+and how-to-continue are in **`agent_handoffs/2026-07-17_handoff.md`** (the entry point for the next agent).
+
+**Top next steps (for the Tuesday team meeting; SYK posts suggestions Monday):**
+1. **Pass/fail ranking formulae** (`build/heuristic_shortlist.py`) — Adam explicitly asked; config-driven,
+   provisional; must-pass Safety + Viability, rank survivors by Competition (+ Relevance).
+2. **Emma metagenomics integration** (`airway_ubiquity` + new `pa_cooccurrence`) — scoped/unblocked in the Emma plan doc.
+
+**Then / as data arrives:** Gwyn's BSL-1 list (replace interim `species_safety.csv`); tissue (Gwyn) + mouse
+(Fatemeh) columns; growth-rate/lag viability; SYK QC pass (preliminary -> final); lakehouse ingestion.
+
+**Done checklist:** roster (strain grain) · Safety gate (hemolysis, measured + genomic AMR) · Viability gate
+(SCFM) · Competition gate (PA knock-down + synergy) · gold card (xlsx/csv/parquet + `_about`) · config-as-data ·
+interim candidate/safety list · decision logs · data dictionary (md + docx) · GitHub repo (no data) · Drive +
+team announcement · Emma integration plan.
