@@ -31,9 +31,17 @@ Legend: ✅ done · ⬜ buildable now · 🔒 gated on buy-in.
 
 **The shortlist is a switchboard, not a verdict.** `heuristic_shortlist.py` is a small, biology-agnostic
 engine; every gate, cutoff, and ranking key is a switch in `config/formulation_criteria.yaml` (mode =
-`gate`/`rank`/`off`, plus a missing-data policy). Scientists dial the switches; the build recomputes. Two
-config files, two jobs: `thresholds.yaml` = how a column's *value* is computed; `formulation_criteria.yaml` =
-how columns *combine into a decision*.
+`gate`/`rank`/`off`, plus a missing-data policy). Scientists dial the switches; the build recomputes.
+
+**Three config layers, three jobs (PLUGGED IN → COMPUTED → USED):**
+- `config/data_sources.yaml` — **what data is plugged in.** One `enabled` switch + path + version per
+  source; turn a source off (its columns go blank) or point it at a newer file to swap a data version.
+  Builders read their input path from here via `build/data_sources.py` (no hard-coded paths).
+- `config/thresholds.yaml` — **how a column's *value* is computed** (cutoffs, replicate aggregation).
+- `config/formulation_criteria.yaml` — **how columns *combine* into a ranked decision** (gate/rank/off).
+
+A disabled source can never silently skew a ranking: the engine warns loudly if an enabled criterion
+references a column whose source is turned off. Always `bash tests/run_tests.sh` after changing any of the three.
 
 ## Grain: isolate → strain
 `silver_*` tables are at **isolate grain** (one row per ASMA_id). `gold_unified_sheet.py` maps each isolate to

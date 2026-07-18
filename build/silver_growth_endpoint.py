@@ -14,11 +14,14 @@ from collections import defaultdict
 from statistics import mean
 from lib_ids import normalize_asma_id, read_xlsx_sheet, write_table
 from config import CFG
+from data_sources import source, is_enabled
 
+SOURCE = "growth_endpoint"
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(os.path.dirname(HERE), "data", "silver", "silver_growth_endpoint")
-SRC = "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260714.xlsx"
-SHEET = "Growth_endpoint"
+_SRC = source(SOURCE)
+SRC = _SRC["path"]
+SHEET = _SRC.get("sheet")
 SCFM_MIN = CFG["viability"]["scfm_grow_min_od"]        # team-owned
 QC_MIN = CFG["viability"]["qc_rich_media_min_od"]      # team-owned
 CONDS = ["No_Carbon_72", "SCFM_72", "SCFM_mucin_0.5_72", "BHIS_72"]
@@ -34,6 +37,9 @@ def num(v):
 
 
 def main():
+    if not is_enabled(SOURCE):
+        print(f"silver_growth_endpoint -> source '{SOURCE}' disabled in data_sources.yaml; skipping")
+        return
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     rows = list(read_xlsx_sheet(SRC, SHEET))
 

@@ -11,11 +11,14 @@ Output : one row per ASMA_id (isolate grain). Replicates/timepoints collapsed co
 import os
 from collections import defaultdict
 from lib_ids import normalize_asma_id, read_xlsx_sheet, write_table
+from data_sources import source, is_enabled
 
+SOURCE = "hemolysis"
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(os.path.dirname(HERE), "data", "silver", "silver_hemolysis")
-SRC = "/usr2/people/protect/Arkin_Lab/hilzinger/hemolysis/ASMArep_HemolysisResultsSummary_063026_ASMAid.xlsx"
-SHEET = "ASMArep_HemolysisResultsSummary"
+_SRC = source(SOURCE)
+SRC = _SRC["path"]
+SHEET = _SRC.get("sheet")
 BETA = ["24: Beta Hemolysis?", "48: Beta Hemolysis?", "72: Beta Hemolysis?"]
 ALPHA = ["24: Alpha Hemolysis?", "48: Alpha Hemolysis?", "72: Alpha Hemolysis?"]
 COLS = ["asma_id", "grew", "beta_hemolytic", "alpha_hemolytic", "hemolysis_concern",
@@ -29,6 +32,9 @@ def any_yes(vals):
 
 
 def main():
+    if not is_enabled(SOURCE):
+        print(f"silver_hemolysis -> source '{SOURCE}' disabled in data_sources.yaml; skipping")
+        return
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     agg = defaultdict(lambda: {"grew": [], "beta": [], "alpha": [], "n": 0})
     for row in read_xlsx_sheet(SRC, SHEET):

@@ -1,0 +1,148 @@
+# =============================================================================
+# data_sources.yaml  —  THE DATA REGISTRY (team-owned)
+# =============================================================================
+# This is the FIRST of our three config layers. The full picture:
+#
+#     data_sources.yaml       = WHAT DATA IS PLUGGED IN   (this file)
+#     thresholds.yaml         = HOW each column's VALUE is computed
+#     formulation_criteria.yaml = HOW columns COMBINE into a ranked decision
+#
+# Mental model:  PLUGGED IN  ->  COMPUTED  ->  USED.
+#
+# Each source below is a SWITCH. Turn one off (`enabled: false`) and its builder is
+# skipped and its columns leave the card. Point `path`/`version` at a newer file to
+# swap a data version in. Then re-run:
+#     bash build/run_all.sh
+#     bash tests/run_tests.sh      <-- ALWAYS, so a data swap can't silently skew results
+#
+# This is also our machine-readable PROVENANCE: exactly where every column came from
+# and which version, so if we ever pulled from the wrong spot we can see it and fix it.
+# (The human-readable companion is data/bronze/BRONZE_MANIFEST.md.)
+#
+# Per-source fields:
+#   enabled      on/off. Default true if omitted.
+#   required     true = the sheet cannot be built without it (roster backbone); cannot be disabled.
+#   owner        who maintains the raw file.
+#   path         exact server address (a file, or a directory when `files:` is used).
+#   sheet        (xlsx only) which tab to read.
+#   files        (directory sources) the specific files used.
+#   version      a human label for WHICH version this is (bump when you swap the data).
+#   consumed_by  the build/ script that reads it.
+#   provides     the GOLD-CARD columns this source is responsible for (used by the
+#                shortlist engine to warn if a criterion depends on a disabled source).
+# =============================================================================
+
+sources:
+
+  # ---- IDENTITY / roster backbone (required: the sheet cannot exist without these) ----
+  stock_list:
+    enabled: true
+    required: true
+    owner: "Sun-Young Kim (SYK)"
+    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_list.xlsx"
+    version: "SYK ASMA_list (stock universe)"
+    consumed_by: identity_spine
+    provides: []                       # stock location attributes only; no decision columns
+
+  gtdb_taxonomy:
+    enabled: true
+    required: true
+    owner: "Alex Styer"
+    path: "/usr2/people/alex.styer/protect/ASMA/gtdbtk/gtdbtk-summary.tsv"
+    version: "Alex ASMA gtdbtk-summary"
+    consumed_by: identity_spine
+    provides: [genus, species]
+
+  mash_clusters:
+    enabled: true
+    required: true
+    owner: "Alex Styer"
+    path: "/usr2/people/alex.styer/protect/ASMA/mash/clusters.csv"
+    version: "Alex ASMA mash clusters"
+    consumed_by: identity_spine
+    provides: [strain_group, representative_asma_id, n_isolates]
+
+  # ---- SAFETY ----
+  hemolysis:
+    enabled: true
+    owner: "Cassandra Reyes (via Jake Hilzinger)"
+    path: "/usr2/people/protect/Arkin_Lab/hilzinger/hemolysis/ASMArep_HemolysisResultsSummary_063026_ASMAid.xlsx"
+    sheet: "ASMArep_HemolysisResultsSummary"
+    version: "063026"
+    consumed_by: silver_hemolysis
+    provides: [hemolysis_beta, hemolysis_concern]
+
+  amr_measured:
+    enabled: true
+    owner: "Sun-Young Kim (SYK)"
+    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260714.xlsx"   # shared SYK workbook (3 sheets)
+    sheet: "Antibiotic_resistance_v2"
+    version: "20260714"
+    consumed_by: silver_amr_measured
+    provides: [amr_resistance_count_prov]
+
+  amr_genomic:
+    enabled: true
+    owner: "Alex Styer"
+    path: "/usr2/people/alex.styer/protect/ASMA/amrfinder.tsv"
+    version: "Alex ASMA amrfinder (AMRFinderPlus)"
+    consumed_by: silver_amr_genomic
+    provides: [amr_gene_count]
+
+  # ---- VIABILITY ----
+  growth_endpoint:
+    enabled: true
+    owner: "Sun-Young Kim (SYK)"
+    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260714.xlsx"   # shared SYK workbook (3 sheets)
+    sheet: "Growth_endpoint"
+    version: "20260714"
+    consumed_by: silver_growth_endpoint
+    provides: [grows_scfm, scfm_od, mucin_lift]
+
+  # ---- COMPETITION ----
+  competition:
+    enabled: true
+    owner: "Sun-Young Kim (SYK)"
+    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260714.xlsx"   # shared SYK workbook (3 sheets)
+    sheet: "Competition"
+    version: "20260714"
+    consumed_by: silver_competition
+    provides: [comp_best_solo_pa, comp_best_team_pa, comp_best_partner, comp_synergy_pa, comp_n_formulations]
+
+  # ---- RELEVANCE (Emma metagenomics; canonical set = final_dataset_clean, built 2026-06-18) ----
+  # Verified current 2026-07-18: final_dataset_clean supersedes the older analysis_cluster* variants;
+  # the sibling PRO_metaRS_actuallast/ holds only raw fastq re-sequencing inputs, not processed tables.
+  emma_cluster_map:
+    enabled: true
+    owner: "Emma Roholfada (Zengler lab)"
+    path: "/usr2/people/protect/Zengler_Lab/Emma/custom_database/"
+    files: [genome_to_cluster_95.map, genome_to_species_full.map]
+    version: "custom_database (subset10 DB)"
+    consumed_by: silver_emma_map      # shared backbone: cluster_95 id <-> ASMA / species
+    provides: []
+
+  airway_abundance:
+    enabled: true
+    owner: "Emma Roholfada (Zengler lab)"
+    path: "/usr2/people/protect/Zengler_Lab/Emma/final_dataset_clean/multiomics_paired_depthfiltered_raw.tsv"
+    version: "final_dataset_clean 2026-06-18 (149 metaG + 149 metaRS)"
+    consumed_by: silver_airway_abundance
+    provides: [abundance_metag, prevalence_metag, abundance_metars, prevalence_metars]
+
+  pa_cooccurrence:
+    enabled: true
+    owner: "Emma Roholfada (Zengler lab)"
+    path: "/usr2/people/protect/Zengler_Lab/Emma/final_dataset_clean/sparcc_PApos/out_metaG/"
+    files: [median_correlation.tsv, pvalues.tsv]
+    version: "final_dataset_clean 2026-06-18 (SparCC, PA-positive samples, PA = cluster 737)"
+    consumed_by: silver_pa_cooccurrence
+    provides: [pa_cooccurrence, pa_cooccurrence_p]
+
+  pa_metabolic_competitor:
+    enabled: true
+    owner: "Emma Roholfada (Zengler lab)"
+    path: "/usr2/people/protect/Zengler_Lab/Emma/final_dataset_clean/MIND/data/"
+    files: [MIND_PA_competitors_per_sample.tsv, MIND_PA_abundance_metaG.tsv]
+    version: "final_dataset_clean 2026-06-18 (MIND metabolic model)"
+    consumed_by: silver_pa_metabolic_competitor
+    provides: [pa_metabolic_competitor]

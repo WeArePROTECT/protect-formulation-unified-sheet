@@ -22,13 +22,14 @@ import os
 from collections import Counter, defaultdict
 
 from lib_ids import normalize_asma_id, read_xlsx_sheet, read_delimited, parse_gtdb_lineage, write_table
+from data_sources import source, validate
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REF = os.path.join(os.path.dirname(HERE), "data", "reference")
 
-STOCK_LIST = "/usr2/people/protect/Arkin_Lab/SYK/ASMA_list.xlsx"
-GTDBTK = "/usr2/people/alex.styer/protect/ASMA/gtdbtk/gtdbtk-summary.tsv"
-MASH = "/usr2/people/alex.styer/protect/ASMA/mash/clusters.csv"
+STOCK_LIST = source("stock_list")["path"]
+GTDBTK = source("gtdb_taxonomy")["path"]
+MASH = source("mash_clusters")["path"]
 
 ISO_COLS = ["asma_id", "strain_group", "is_representative", "genus", "species",
             "gtdb_classification", "in_stock", "stock_location", "stock_location_well", "growth_media"]
@@ -75,6 +76,7 @@ def load_clusters():
 
 
 def main():
+    validate()          # required (roster backbone) sources must not be disabled
     os.makedirs(REF, exist_ok=True)
     stock = load_stock()
     tax = load_taxonomy()

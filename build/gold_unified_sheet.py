@@ -19,6 +19,7 @@ import re
 from collections import defaultdict
 from lib_ids import read_delimited, write_table
 from config import CFG
+from data_sources import is_enabled
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -79,11 +80,13 @@ def main():
     for iso in read_delimited(os.path.join(REF, "identity_isolates.csv"), ","):
         grp_members[iso["strain_group"]].append(iso["asma_id"])
 
-    hemo = load_keyed(os.path.join(SILVER, "silver_hemolysis.csv"))
-    amrm = load_keyed(os.path.join(SILVER, "silver_amr_measured.csv"))
-    amrg = load_keyed(os.path.join(SILVER, "silver_amr_genomic.csv"))
-    comp = load_keyed(os.path.join(SILVER, "silver_competition.csv"))
-    grow = load_keyed(os.path.join(SILVER, "silver_growth_endpoint.csv"))
+    # Only join a source's silver table if that source is enabled in data_sources.yaml.
+    # A disabled source -> empty dict -> its columns come out blank (like not-yet-arrived data).
+    hemo = load_keyed(os.path.join(SILVER, "silver_hemolysis.csv")) if is_enabled("hemolysis") else {}
+    amrm = load_keyed(os.path.join(SILVER, "silver_amr_measured.csv")) if is_enabled("amr_measured") else {}
+    amrg = load_keyed(os.path.join(SILVER, "silver_amr_genomic.csv")) if is_enabled("amr_genomic") else {}
+    comp = load_keyed(os.path.join(SILVER, "silver_competition.csv")) if is_enabled("competition") else {}
+    grow = load_keyed(os.path.join(SILVER, "silver_growth_endpoint.csv")) if is_enabled("growth_endpoint") else {}
     by_species, by_genus = load_safety_ref()
 
     rows = []

@@ -8,6 +8,10 @@ first thing to check.
 **Convention:** raw (bronze, pointed-to here) → cleaned (silver, `../silver/`) → combined (gold, `../gold/`).
 Everything keys on the canonical `ASMA_id` (see `build/lib_ids.py`).
 
+> **Machine-readable companion:** `config/data_sources.yaml` is the registry the build actually reads (each
+> source's exact path, version, on/off switch, and the gold columns it provides). This doc is the human-readable
+> narrative; the YAML is the source of truth the builders load. Keep them consistent.
+
 Last updated: 2026-07-15. Preliminary flags reflect owner notes at that date — verify against the live file.
 
 ---

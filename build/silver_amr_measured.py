@@ -16,11 +16,14 @@ from collections import defaultdict
 from statistics import mean
 from lib_ids import normalize_asma_id, read_xlsx_sheet, write_table
 from config import CFG
+from data_sources import source, is_enabled
 
+SOURCE = "amr_measured"
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(os.path.dirname(HERE), "data", "silver", "silver_amr_measured")
-SRC = "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260714.xlsx"
-SHEET = "Antibiotic_resistance_v2"
+_SRC = source(SOURCE)
+SRC = _SRC["path"]
+SHEET = _SRC.get("sheet")
 DRUGS = ["Ampicillin", "Ciprofloxacin", "Chloramphenicol", "Tetracycline", "Gentamicin", "Erythromycin"]
 # Thresholds are TEAM-OWNED — see config/thresholds.yaml. Raw %s are kept so any cutoff re-derives.
 QC_MIN = CFG["safety"]["amr_measured"]["qc_min_delta_od"]
@@ -37,6 +40,9 @@ def num(v):
 
 
 def main():
+    if not is_enabled(SOURCE):
+        print(f"silver_amr_measured -> source '{SOURCE}' disabled in data_sources.yaml; skipping")
+        return
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     agg = defaultdict(lambda: {**{d: [] for d in DRUGS}, "n": 0})
     for row in read_xlsx_sheet(SRC, SHEET):

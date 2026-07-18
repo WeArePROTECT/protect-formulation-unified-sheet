@@ -12,15 +12,20 @@ Output : one row per ASMA_id — how many AMR genes, how many distinct drug clas
 import os
 from collections import defaultdict
 from lib_ids import normalize_asma_id, read_delimited, write_table
+from data_sources import source, is_enabled
 
+SOURCE = "amr_genomic"
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(os.path.dirname(HERE), "data", "silver", "silver_amr_genomic")
-SRC = "/usr2/people/alex.styer/protect/ASMA/amrfinder.tsv"
+SRC = source(SOURCE)["path"]
 COLS = ["asma_id", "amr_gene_count", "amr_class_count", "amr_classes",
         "total_elements", "assay", "tool", "source_file"]
 
 
 def main():
+    if not is_enabled(SOURCE):
+        print(f"silver_amr_genomic -> source '{SOURCE}' disabled in data_sources.yaml; skipping")
+        return
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     agg = defaultdict(lambda: {"amr": 0, "classes": set(), "total": 0})
     for row in read_delimited(SRC):

@@ -16,11 +16,14 @@ from collections import defaultdict
 from statistics import median, mean
 from lib_ids import normalize_asma_id, read_xlsx_sheet, write_table
 from config import CFG
+from data_sources import source, is_enabled
 
+SOURCE = "competition"
 HERE = os.path.dirname(os.path.abspath(__file__))
 SILVER = os.path.join(os.path.dirname(HERE), "data", "silver")
-SRC = "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260714.xlsx"
-SHEET = "Competition"
+_SRC = source(SOURCE)
+SRC = _SRC["path"]
+SHEET = _SRC.get("sheet")
 MEM_COLS = ["ASMA_A_id", "ASMA_B_id", "ASMA_C_id", "ASMA_D_id", "ASMA_E_id"]
 # Team-owned settings — see config/thresholds.yaml
 PA_PRIMARY = CFG["competition"]["headline_reporter"]   # headline PA reporter
@@ -54,6 +57,9 @@ def is_standard(cond):
 
 
 def main():
+    if not is_enabled(SOURCE):
+        print(f"silver_competition -> source '{SOURCE}' disabled in data_sources.yaml; skipping")
+        return
     os.makedirs(SILVER, exist_ok=True)
 
     # collect replicate wells: (frozenset of members, reporter) -> [inhibition values]

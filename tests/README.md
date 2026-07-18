@@ -27,6 +27,7 @@ python -m unittest tests.test_golden    # one file
 | `test_units.py` | The pure functions (ID normalizer, comparators, ranking key, fallback). | No | **A real bug.** These must always pass. |
 | `test_golden.py` | The whole engine on a **synthetic** dataset with a hand-computed answer (exact ranked order, tie-breaks, gate exclusions, solo fallback, unscreened tier, and that flipping a switch changes the result as predicted). | No | **A real bug** in gates/ranking/tiering. |
 | `test_real_invariants.py` | **Structural invariants on the real output that hold for ANY config** (ranks contiguous, no shortlisted strain failed a gate, every excluded strain failed one, counts partition, ranked rows monotonic by the primary key). | Yes | **A real bug** — the code is wrong regardless of the numbers. |
+| `test_data_sources.py` | The **data registry** (`config/data_sources.yaml`): every enabled source's path exists on the server (provenance/currency), required sources can't be disabled, `provides` declarations are consistent, and the on/off switch is observable (disabling a source flags any criterion that depends on it). | Partly (path checks need the server) | **A real bug or a stale/moved source path.** |
 | `test_default_snapshot.py` | The **exact funnel numbers** for the *shipped default* switchboard (739 candidates → 317 pass → 87 ranked …). | Yes | Expected **iff you intentionally changed the default config** — see below. |
 
 The first three are **config-independent**: they must be green no matter how you set the switches. They are

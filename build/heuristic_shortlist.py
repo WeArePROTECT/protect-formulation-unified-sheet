@@ -266,8 +266,35 @@ def assemble(rows, cfg):
     return out_rows, out_cols, evals, gates, order, primary
 
 
+def check_source_availability(cfg):
+    """Warn loudly if an enabled criterion depends on a column whose data source is turned OFF.
+
+    A disabled source leaves its column blank, so such a criterion would silently do nothing --
+    exactly the 'result from a bug, not the settings' failure we guard against. Returns the list of
+    offending (mode, name, column, source) so tests can assert the detection fires.
+    """
+    try:
+        from data_sources import disabled_columns
+    except Exception:
+        return []                    # registry not importable (isolated test) -> skip the check
+    dis = disabled_columns()
+    hits = []
+    for c in cfg.get("criteria", []):
+        if c.get("mode") in ("gate", "rank"):
+            for col in (c.get("column"), c.get("column_fallback")):
+                if col and col in dis:
+                    hits.append((c["mode"], c["name"], col, dis[col]))
+    if hits:
+        print("  !! WARNING: criteria reference DISABLED data sources (they will silently do nothing):")
+        for mode, name, col, src in hits:
+            print(f"       [{mode}] '{name}' reads '{col}', from source '{src}' which is OFF in data_sources.yaml.")
+        print("       Fix: enable the source in data_sources.yaml, or set that criterion's mode: off.")
+    return hits
+
+
 def main():
     cfg = load_criteria()
+    check_source_availability(cfg)
     rows = select_pool(list(read_delimited(GOLD_CARD, ",")), cfg)
     out_rows, out_cols, evals, gates, order, primary = assemble(rows, cfg)
     write_table(out_rows, out_cols, OUT)
