@@ -53,7 +53,21 @@ Values are percent knock-down of *P. aeruginosa* (0 = PA grew freely, 100 = full
 |---|---|---|
 | `tissue` | Tissue-model result (PA reduction on airway tissue) | Gwyn, not on the server yet |
 | `mouse` | Mouse-model result | Fatemeh, not on the server yet |
-| `airway_ubiquity` | How common the strain is in airway metagenomes / patients | To be derived from Zengler metagenomics + the patient linkage |
+
+## Relevance (how common the strain is in real patient airways — Emma's metagenomics)
+Joined to our strains via Emma's cluster_95 ids (which trace back to our ASMA genomes). This is at
+species/cluster resolution (coarser than strain), so several strains can share one cluster's value; blank if
+the strain is not in Emma's reference set. **metaG = DNA (who is PRESENT); metaRS = RNA (who is ACTIVE).**
+| Column | What it means | How it is derived | Values |
+|---|---|---|---|
+| `prevalence_metag` | How often the strain's cluster is PRESENT across patient airway samples (DNA) | Fraction of 149 metaG samples with a nonzero count for the strain's cluster_95 | 0 to 1 (1 = in every sample) |
+| `abundance_metag` | How ABUNDANT it is when present (DNA) | Mean over samples of the cluster's share of the community, as a percent | percent (higher = more of the community) |
+| `prevalence_metars` | How often it is ACTIVE across samples (RNA) | As `prevalence_metag`, on metaRS (transcript) counts | 0 to 1 |
+| `abundance_metars` | How abundant its ACTIVITY is (RNA) | Mean relative abundance on metaRS counts | percent |
+
+*A naturally common, active airway resident that also beats PA is a stronger candidate than one that only wins
+in a dish. Reasoning: `docs/decisions/relevance_emma_decisions.md`. Co-occurrence with PA + a MIND metabolic
+signal are coming next.*
 
 ## Decision (the verdict, once the team sets the bars)
 | Column | What it means | Status |

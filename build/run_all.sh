@@ -16,6 +16,8 @@ echo "== 2. silver stat sheets =="
 "$PY" silver_competition.py           # COMPETITION — also writes the formulations table
 "$PY" silver_growth_endpoint.py       # VIABILITY — SCFM grow/no-grow + mucin lift
 # "$PY" silver_growth_curves.py       # VIABILITY — growth rate/lag (todo)
+"$PY" silver_emma_map.py              # RELEVANCE — Emma cluster_95 <-> ASMA/species backbone
+"$PY" silver_airway_abundance.py      # RELEVANCE — metaG/metaRS airway abundance + prevalence
 
 echo "== 3. gold card =="
 "$PY" gold_unified_sheet.py           # strain-level decision card (.csv/.parquet/.xlsx)

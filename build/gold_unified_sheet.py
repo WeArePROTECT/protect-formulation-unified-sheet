@@ -16,7 +16,7 @@ Out:  ../data/gold/gold_unified_sheet.{csv,parquet,xlsx}
 """
 import os
 import re
-from collections import defaultdict
+from collections import Counter, defaultdict
 from lib_ids import read_delimited, write_table
 from config import CFG
 from data_sources import is_enabled
@@ -37,7 +37,9 @@ GOLD_COLS = [
     "hemolysis_beta", "hemolysis_concern", "amr_resistance_count_prov", "amr_gene_count",
     "grows_scfm", "scfm_od", "mucin_lift",
     "comp_best_solo_pa", "comp_best_team_pa", "comp_best_partner", "comp_synergy_pa", "comp_n_formulations",
-    "tissue", "mouse", "airway_ubiquity", "decision", "decision_reason",
+    "tissue", "mouse",
+    "abundance_metag", "prevalence_metag", "abundance_metars", "prevalence_metars",
+    "decision", "decision_reason",
 ]
 
 
@@ -87,6 +89,13 @@ def main():
     amrg = load_keyed(os.path.join(SILVER, "silver_amr_genomic.csv")) if is_enabled("amr_genomic") else {}
     comp = load_keyed(os.path.join(SILVER, "silver_competition.csv")) if is_enabled("competition") else {}
     grow = load_keyed(os.path.join(SILVER, "silver_growth_endpoint.csv")) if is_enabled("growth_endpoint") else {}
+    # RELEVANCE (Emma): asma -> cluster_95 backbone, and cluster_95 -> airway abundance metrics.
+    emma_map_path = os.path.join(SILVER, "silver_emma_map.csv")
+    abund_path = os.path.join(SILVER, "silver_airway_abundance.csv")
+    asma_cluster = ({r["asma_id"]: r["cluster_95"] for r in read_delimited(emma_map_path, ",")}
+                    if is_enabled("emma_cluster_map") and os.path.exists(emma_map_path) else {})
+    abund = (load_keyed(abund_path, key="cluster_95")
+             if is_enabled("airway_abundance") and os.path.exists(abund_path) else {})
     by_species, by_genus = load_safety_ref()
 
     rows = []
@@ -115,6 +124,11 @@ def main():
         best = max(comp_members, key=lambda r: (num(r["best_team_inhib_pa"]) or -1e9,
                                                  num(r["best_solo_inhib_pa"]) or -1e9)) if comp_members else None
 
+        # RELEVANCE — the strain's Emma cluster (dominant across its isolates), then that cluster's abundance
+        clus = [asma_cluster[a] for a in members if a in asma_cluster]
+        cl = Counter(clus).most_common(1)[0][0] if clus else None
+        ab = abund.get(cl) if cl else None
+
         rows.append({
             "strain_group": grp, "representative_asma_id": s["representative_asma_id"],
             "genus": genus, "species": species, "n_isolates": s.get("n_isolates"),
@@ -129,7 +143,11 @@ def main():
             "comp_best_partner": best["best_partner"] if best else None,
             "comp_synergy_pa": best["suppressive_synergy_pa"] if best else None,
             "comp_n_formulations": best["n_formulations_pa"] if best else None,
-            "tissue": None, "mouse": None, "airway_ubiquity": None,
+            "tissue": None, "mouse": None,
+            "abundance_metag": ab["abundance_metag"] if ab else None,
+            "prevalence_metag": ab["prevalence_metag"] if ab else None,
+            "abundance_metars": ab["abundance_metars"] if ab else None,
+            "prevalence_metars": ab["prevalence_metars"] if ab else None,
             "decision": None, "decision_reason": None,
         })
 
