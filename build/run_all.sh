@@ -20,4 +20,8 @@ echo "== 2. silver stat sheets =="
 echo "== 3. gold card =="
 "$PY" gold_unified_sheet.py           # strain-level decision card (.csv/.parquet/.xlsx)
 
+echo "== 4. formulation shortlist =="
+"$PY" heuristic_shortlist.py          # config-driven gates + ranking (config/formulation_criteria.yaml)
+
 echo "== done. outputs in ../data/{reference,silver,gold} =="
+echo "   tip: if you changed a threshold or the switchboard, verify with  bash tests/run_tests.sh"

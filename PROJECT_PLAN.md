@@ -13,6 +13,11 @@
 >   (one edit + `bash build/run_all.sh` recomputes the whole card); safety/candidacy in
 >   `data/reference/species_safety.csv` (interim, to be replaced by Gwyn's BSL-1 list). We make our best-guess
 >   defaults and make it trivial for the biologists to change them. See `docs/decisions/thresholds_are_team_owned.md`.
+> - **Test after any settings change:** run `bash tests/run_tests.sh` whenever you edit
+>   `config/thresholds.yaml`, `config/formulation_criteria.yaml`, or anything under `build/`. This is a
+>   science-critical pipeline: the tests prove a changed result comes from the *settings*, not a bug. The
+>   unit / golden / invariant layers must stay green; the default snapshot is meant to fail on an intentional
+>   default-config change (update its baseline then). See `tests/README.md`.
 > - **Backlog:** do a broad server sweep for *other* formulation data we may be missing (Spencer's note
 >   2026-07-15 — "we may have a lot more on the server than we think"). Future task, not blocking.
 

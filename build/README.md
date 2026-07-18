@@ -25,9 +25,15 @@ tells you what it is. Run-order lives here (the table below) and in `run_all.sh`
 | `gold_unified_sheet.py` | strain-level decision card (`.xlsx` + `.csv`/`.parquet`) | ✅ done · decisions in `docs/decisions/gold_unified_sheet_decisions.md` |
 | `silver_growth_endpoint.py` | SCFM ± mucin grow/no-grow (VIABILITY) | ✅ done · decisions in `docs/decisions/viability_stat_sheet_decisions.md` |
 | `silver_growth_curves.py` | derived growth rate/lag (VIABILITY) | ⬜ unblocked |
-| `heuristic_shortlist.py` | strawman gates → ranked shortlist | 🔒 after team buy-in |
+| `heuristic_shortlist.py` | config-driven gates + ranking → shortlist | ✅ done · switchboard `config/formulation_criteria.yaml` · decisions in `docs/decisions/heuristic_shortlist_decisions.md` |
 
 Legend: ✅ done · ⬜ buildable now · 🔒 gated on buy-in.
+
+**The shortlist is a switchboard, not a verdict.** `heuristic_shortlist.py` is a small, biology-agnostic
+engine; every gate, cutoff, and ranking key is a switch in `config/formulation_criteria.yaml` (mode =
+`gate`/`rank`/`off`, plus a missing-data policy). Scientists dial the switches; the build recomputes. Two
+config files, two jobs: `thresholds.yaml` = how a column's *value* is computed; `formulation_criteria.yaml` =
+how columns *combine into a decision*.
 
 ## Grain: isolate → strain
 `silver_*` tables are at **isolate grain** (one row per ASMA_id). `gold_unified_sheet.py` maps each isolate to

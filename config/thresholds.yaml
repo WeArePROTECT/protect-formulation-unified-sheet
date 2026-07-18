@@ -9,6 +9,10 @@
 #     bash build/run_all.sh
 # The whole card recalculates. Nothing in the code is hard-coded; this file wins.
 #
+# !! AFTER ANY CHANGE, RUN THE TESTS:  bash tests/run_tests.sh   (see tests/README.md)
+#    This pipeline feeds real lab decisions, so we verify every settings change is doing
+#    what we intend and not tripping a bug.
+#
 # Scientists: if you want a column computed differently (a different cutoff, a
 # different way to combine replicates, a stricter safety rule), tell Spencer or edit
 # the value here. The build adapts to you — you do not adapt to it.

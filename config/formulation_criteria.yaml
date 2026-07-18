@@ -1,0 +1,93 @@
+# =============================================================================
+# formulation_criteria.yaml  —  THE SWITCHBOARD (team-owned)
+# =============================================================================
+# This file decides how the per-strain columns on the gold card COMBINE into a
+# ranked formulation shortlist. It is the companion to config/thresholds.yaml:
+#
+#     thresholds.yaml  = how each column's VALUE is computed (e.g. the AMR cutoff)
+#     THIS file        = how those columns become a PASS / FAIL / RANK decision
+#
+# Everything here is a SWITCH. Change a value, then re-run:
+#     bash build/run_all.sh
+# and build/heuristic_shortlist.py recomputes the whole shortlist. No decision is
+# hard-coded in Python; this file wins.
+#
+# !! AFTER ANY CHANGE, RUN THE TESTS:  bash tests/run_tests.sh
+#    This confirms the new result comes from YOUR change, not from a bug. This pipeline
+#    feeds real lab decisions, so we verify every settings change. See tests/README.md.
+#
+# WHO OWNS THIS: the biologists/experimentalists. The data team ships best-guess
+# DEFAULTS so there is something concrete to react to; YOU set the real bars. Tell
+# Spencer what you want, or edit here directly. The build adapts to you.
+#
+# -----------------------------------------------------------------------------
+# HOW A CRITERION WORKS. Each entry under `criteria:` is one switch:
+#
+#   - name:        a short label (shown in the "why" reason on every strain)
+#     column:      which gold-card column it reads
+#     column_fallback:  (optional) use this column when `column` is blank
+#     mode:        gate | rank | off
+#                    gate = MUST-PASS. Fail it and the strain drops off the shortlist.
+#                    rank = does NOT exclude anyone; it orders the survivors.
+#                    off  = ignored entirely (the switch is flipped down).
+#     pass_when:   (gates only) the test to pass, e.g. "== N", "<= 2", ">= 0.1".
+#                    operators: == != >= <= > <   (numbers compared as numbers,
+#                    everything else compared as text, so "== N" matches the text N).
+#     higher_is_better:  (rank only) true = bigger is better; false = smaller is better.
+#                    Y/N columns rank as yes=1, no=0.
+#     missing:     what to do when the strain has NO data for this column:
+#                    gates -> fail | pass   (default pass: do not punish untested strains)
+#                    rank  -> rank_last | rank_first   (default rank_last: no data sinks)
+#
+# `ranking.order` lists the rank-mode criteria to sort by, in priority order
+# (first = primary sort key, the rest break ties). `unscreened_tier: true` splits
+# strains that have NO value for the primary ranking column into a flagged
+# "not screened yet" tier at the bottom, instead of ranking them as if they lost.
+# =============================================================================
+
+# Restrict the shortlist to plausible candidates (is_candidate == True: not a known
+# pathogen/opportunist). Set false to score every strain, pathogens included.
+candidates_only: true
+
+criteria:
+
+  # ---- SAFETY (the only hard gates in the shipped defaults) -----------------
+  - name: non_hemolytic
+    column: hemolysis_beta
+    mode: gate
+    pass_when: "== N"          # beta-hemolysis is the main "could harm the patient" flag
+    missing: pass              # not yet screened -> do not hold it against the strain
+
+  - name: amr_not_mdr
+    column: amr_resistance_count_prov
+    mode: gate
+    pass_when: "<= 2"          # resists at most 2 of 6 drugs. The team sets this MDR line.
+    missing: pass
+
+  # ---- VIABILITY (shipped as a RANKING signal, NOT a hard gate) -------------
+  # SCFM is a deliberately harsh lung-mimic and the data is pre-QC, so only a few
+  # strains score positive. We ship this as `rank` so it lifts good growers without
+  # dropping the rest. To REQUIRE growth in SCFM, change  mode: rank  ->  mode: gate
+  # (and set pass_when: "== Y").
+  - name: grows_in_scfm
+    column: grows_scfm
+    mode: rank
+    higher_is_better: true     # Y (grows) sorts above N (does not)
+    missing: rank_last
+
+  # ---- COMPETITION (the primary ranking key) -------------------------------
+  # Best knock-down of PA on a team, falling back to the solo result when a strain
+  # has no team data. This is the headline number the shortlist is sorted by.
+  - name: beats_pa
+    column: comp_best_team_pa
+    column_fallback: comp_best_solo_pa
+    mode: rank
+    higher_is_better: true
+    missing: rank_last         # untested-for-competition strains sink, not dropped
+
+ranking:
+  # Sort survivors by these rank-mode criteria, in order (ties broken left to right).
+  order: [beats_pa, grows_in_scfm]
+  # Strains with no data for the PRIMARY criterion (beats_pa) go to a flagged
+  # "not screened yet" tier at the bottom rather than being ranked as if they lost.
+  unscreened_tier: true
