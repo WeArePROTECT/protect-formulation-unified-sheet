@@ -39,6 +39,7 @@ GOLD_COLS = [
     "comp_best_solo_pa", "comp_best_team_pa", "comp_best_partner", "comp_synergy_pa", "comp_n_formulations",
     "tissue", "mouse",
     "abundance_metag", "prevalence_metag", "abundance_metars", "prevalence_metars",
+    "pa_cooccurrence", "pa_cooccurrence_p", "pa_metabolic_competitor",
     "decision", "decision_reason",
 ]
 
@@ -96,6 +97,12 @@ def main():
                     if is_enabled("emma_cluster_map") and os.path.exists(emma_map_path) else {})
     abund = (load_keyed(abund_path, key="cluster_95")
              if is_enabled("airway_abundance") and os.path.exists(abund_path) else {})
+    cooc_path = os.path.join(SILVER, "silver_pa_cooccurrence.csv")
+    metab_path = os.path.join(SILVER, "silver_pa_metabolic_competitor.csv")
+    cooc = (load_keyed(cooc_path, key="cluster_95")
+            if is_enabled("pa_cooccurrence") and os.path.exists(cooc_path) else {})
+    metab = (load_keyed(metab_path, key="cluster_95")
+             if is_enabled("pa_metabolic_competitor") and os.path.exists(metab_path) else {})
     by_species, by_genus = load_safety_ref()
 
     rows = []
@@ -128,6 +135,8 @@ def main():
         clus = [asma_cluster[a] for a in members if a in asma_cluster]
         cl = Counter(clus).most_common(1)[0][0] if clus else None
         ab = abund.get(cl) if cl else None
+        co = cooc.get(cl) if cl else None
+        mc = metab.get(cl) if cl else None
 
         rows.append({
             "strain_group": grp, "representative_asma_id": s["representative_asma_id"],
@@ -148,6 +157,9 @@ def main():
             "prevalence_metag": ab["prevalence_metag"] if ab else None,
             "abundance_metars": ab["abundance_metars"] if ab else None,
             "prevalence_metars": ab["prevalence_metars"] if ab else None,
+            "pa_cooccurrence": co["pa_cooccurrence"] if co else None,
+            "pa_cooccurrence_p": co["pa_cooccurrence_p"] if co else None,
+            "pa_metabolic_competitor": mc["pa_metabolic_competitor"] if mc else None,
             "decision": None, "decision_reason": None,
         })
 

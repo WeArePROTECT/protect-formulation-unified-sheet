@@ -62,16 +62,35 @@ backbone; PA co-occurrence and the MIND metabolic-competitor signal follow the s
 - `emma_cluster_map` and `airway_abundance` are switches in `data_sources.yaml`; turning either off blanks the
   relevance columns, and the shortlist engine warns if a criterion then depends on them.
 
+### D8 — PA co-occurrence (`silver_pa_cooccurrence.py`) — real-world EVIDENCE, not proof
+- **What:** Emma's SparCC network on **PA-positive samples** (`sparcc_PApos/out_metaG/`). We pull PA's row
+  (cluster 737) from `median_correlation.tsv` + `pvalues.tsv` -> per cluster: `pa_cooccurrence` (correlation)
+  and `pa_cooccurrence_p`. NEGATIVE = anti-correlated with PA (present when PA is absent -> a natural displacer).
+- **Options:** SparCC on PA-positive samples (`sparcc_PApos`) vs all samples (`sparcc/`).
+- **Chosen:** PA-positive, because the question is "when PA is present, who is displacing it." Registry-switchable
+  to the all-samples variant if the team prefers. **Correlation is evidence, NOT proof of competition** — it
+  complements the in-vitro gate, it does not replace it. 156 clusters are significantly anti-correlated with PA.
+
+### D9 — MIND metabolic competitor (`silver_pa_metabolic_competitor.py`) — a PREDICTION, labeled as such
+- **What:** MIND (metabolic model) `MIND_PA_competitors_per_sample.tsv` (focal 737 = PA). Per competitor cluster
+  we summarize mean `competition_score` across the samples that flagged it (+ n_samples). 100 predicted
+  competitor clusters; top hits include known aggressive organisms (Citrobacter, Achromobacter — themselves
+  excluded as candidates, but a good sanity signal).
+- **Why labeled:** this is a **model prediction**, not a wet-lab measurement or an observed count, and the docs
+  say so, so it is never mistaken for measured data. **Revisit if:** MIND is re-run.
+
 ## Sanity check at build
 779 ASMA genomes mapped; PA cluster 737 = 15 ASMA members; 315 clusters scored (149 metaG + 149 metaRS samples);
 PA (737) metaG prevalence 1.0, mean abundance ~22% (dominant, as expected for a focal pathogen); top commensals
 by prevalence = Rothia / Streptococcus salivarius (abundant airway residents, several also strong PA knockdowns).
 
-## Things intentionally NOT decided here / not yet built
-- **PA co-occurrence** (`silver_pa_cooccurrence`, SparCC PA-positive, PA=737) and **MIND metabolic competitor**
-  (`silver_pa_metabolic_competitor`) — declared in the registry, builders to follow the same cluster->strain join.
+## Things intentionally NOT decided here
 - **Whether relevance gates or ranks** — team-owned (switchboard). We ship the columns, not the policy.
 - **metaG vs metaRS preference** — we ship both; the team chooses which (if either) to rank on.
+- **Which relevance signal matters most** (abundance vs co-occurrence vs predicted competitor) — the team's call.
 
 ## Change log
 - 2026-07-18 — initial version (D1–D7): backbone map + airway abundance (metaG + metaRS).
+- 2026-07-18 — D8 (PA co-occurrence, SparCC PA-positive) + D9 (MIND metabolic competitor) built on the same
+  cluster->strain join. All four relevance signals now on the card; 673/739 candidates carry co-occurrence, 558 a
+  predicted metabolic-competitor score.

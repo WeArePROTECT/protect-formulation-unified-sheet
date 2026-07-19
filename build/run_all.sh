@@ -18,6 +18,8 @@ echo "== 2. silver stat sheets =="
 # "$PY" silver_growth_curves.py       # VIABILITY — growth rate/lag (todo)
 "$PY" silver_emma_map.py              # RELEVANCE — Emma cluster_95 <-> ASMA/species backbone
 "$PY" silver_airway_abundance.py      # RELEVANCE — metaG/metaRS airway abundance + prevalence
+"$PY" silver_pa_cooccurrence.py       # RELEVANCE — SparCC co-occurrence with PA (cluster 737)
+"$PY" silver_pa_metabolic_competitor.py  # RELEVANCE — MIND predicted PA metabolic competitors
 
 echo "== 3. gold card =="
 "$PY" gold_unified_sheet.py           # strain-level decision card (.csv/.parquet/.xlsx)

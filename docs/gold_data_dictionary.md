@@ -64,10 +64,14 @@ the strain is not in Emma's reference set. **metaG = DNA (who is PRESENT); metaR
 | `abundance_metag` | How ABUNDANT it is when present (DNA) | Mean over samples of the cluster's share of the community, as a percent | percent (higher = more of the community) |
 | `prevalence_metars` | How often it is ACTIVE across samples (RNA) | As `prevalence_metag`, on metaRS (transcript) counts | 0 to 1 |
 | `abundance_metars` | How abundant its ACTIVITY is (RNA) | Mean relative abundance on metaRS counts | percent |
+| `pa_cooccurrence` | Does it co-occur with, or displace, PA in real lungs | SparCC correlation with PA (cluster 737) across PA-positive patient samples | ~ -1 to 1. **Negative = anti-correlated (present when PA is absent, a natural displacer)**; positive = co-occurs with PA |
+| `pa_cooccurrence_p` | Significance of that co-occurrence value | SparCC p-value | 0 to 1 (smaller = more significant) |
+| `pa_metabolic_competitor` | PREDICTED (model, not measured) strength as a metabolic competitor of PA | Mean MIND competition_score across patient samples that flagged it | number (higher = stronger predicted competitor) |
 
-*A naturally common, active airway resident that also beats PA is a stronger candidate than one that only wins
-in a dish. Reasoning: `docs/decisions/relevance_emma_decisions.md`. Co-occurrence with PA + a MIND metabolic
-signal are coming next.*
+*A naturally common, active airway resident that ALSO displaces PA in real lungs and beats it in a dish is a
+stronger candidate than one that only wins in a dish. Co-occurrence is real-world evidence (not proof) and the
+metabolic-competitor score is a model prediction (not a measurement), both labeled as such. Reasoning:
+`docs/decisions/relevance_emma_decisions.md`.*
 
 ## Decision (the verdict, once the team sets the bars)
 | Column | What it means | Status |
