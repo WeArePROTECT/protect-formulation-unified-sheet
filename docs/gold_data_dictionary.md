@@ -18,6 +18,7 @@ One row = one strain. Read this to orient yourself before digging into the numbe
 ## Identity (who the strain is)
 **Source:** ASMA stock list (Sun-Young) + GTDB taxonomy + mash strain clusters (Alex) · `data_sources.yaml` keys
 `stock_list`, `gtdb_taxonomy`, `mash_clusters` · rationale: `docs/decisions/gold_unified_sheet_decisions.md`.
+
 | Column | What it means | How it is derived | Values |
 |---|---|---|---|
 | `strain_group` | Internal ID for the strain (a cluster of near-identical isolates) | Alex's whole-genome clustering (mash, >99% identity groups) | integer key |
@@ -31,6 +32,7 @@ One row = one strain. Read this to orient yourself before digging into the numbe
 ## Safety (does it harm the patient)
 **Source:** hemolysis blood-agar screen (Cassandra, via Jake), measured antibiotic panel (Sun-Young),
 AMRFinderPlus genes (Alex) · `data_sources.yaml` keys `hemolysis`, `amr_measured`, `amr_genomic`.
+
 | Column | What it means | How it is derived | Values |
 |---|---|---|---|
 | `hemolysis_beta` | Does it break down red blood cells (beta-hemolysis) | Cassie's blood-agar screen; worst-case across the strain's isolates (Y if any isolate or timepoint was positive) | `Y` / `N` / blank (not determined). Beta-hemolysis is the main "could harm the patient" flag |
@@ -41,6 +43,7 @@ AMRFinderPlus genes (Alex) · `data_sources.yaml` keys `hemolysis`, `amr_measure
 ## Viability (can we grow and make it)
 **Source:** SCFM growth-endpoint screen (Sun-Young) · `data_sources.yaml` key `growth_endpoint` · rationale:
 `docs/decisions/viability_stat_sheet_decisions.md`.
+
 | Column | What it means | How it is derived | Values |
 |---|---|---|---|
 | `grows_scfm` | Does it grow in SCFM (lung-mimic fluid) | Sun-Young's `Growth_endpoint`, background-subtracted; Y if corrected SCFM OD is at least the cutoff (default 0.1) and above the no-carbon control; blank if it did not grow even in rich media (cannot tell). Best-case across isolates | `Y` / `N` / blank (inconclusive) |
@@ -51,6 +54,7 @@ AMRFinderPlus genes (Alex) · `data_sources.yaml` keys `hemolysis`, `amr_measure
 **Source:** SynCom competition screen (Sun-Young) · `data_sources.yaml` key `competition` · rationale:
 `docs/decisions/competition_stat_sheet_decisions.md`.
 Values are percent knock-down of *P. aeruginosa* (0 = PA grew freely, 100 = fully blocked; can be negative if the strain slightly helped PA). Headline pathogen is PA14_KEH108. Repeat wells collapsed by median, best result taken across the strain's isolates.
+
 | Column | What it means | How it is derived | Values |
 |---|---|---|---|
 | `comp_best_solo_pa` | Best knock-down of PA by this strain ALONE | This strain as a 1-member formulation vs PA | percent (can be negative) |
@@ -72,6 +76,7 @@ PA-positive samples), MIND metabolic model · `data_sources.yaml` keys `emma_clu
 Joined to our strains via Emma's cluster_95 ids (which trace back to our ASMA genomes). This is at
 species/cluster resolution (coarser than strain), so several strains can share one cluster's value; blank if
 the strain is not in Emma's reference set. **metaG = DNA (who is PRESENT); metaRS = RNA (who is ACTIVE).**
+
 | Column | What it means | How it is derived | Values |
 |---|---|---|---|
 | `prevalence_metag` | How often the strain's cluster is PRESENT across patient airway samples (DNA) | Fraction of 149 metaG samples with a nonzero count for the strain's cluster_95 | 0 to 1 (1 = in every sample) |
