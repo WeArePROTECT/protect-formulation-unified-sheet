@@ -102,3 +102,7 @@ metabolic-competitor score is a model prediction (not a measurement), both label
 
 *The reasoning behind each modeling choice (why median, why worst-case safety, why the interim candidate list,
 etc.) is in `docs/decisions/`. Where the raw data lives is in `data/bronze/BRONZE_MANIFEST.md`.*
+
+> **Maintainers:** whenever a gold-card column is added / renamed / removed, update this file AND regenerate the
+> Word copy: `pandoc docs/gold_data_dictionary.md -o docs/gold_data_dictionary.docx`, then re-upload the `.docx`
+> to the team Drive. Always keep a blank line before every table, or pandoc merges it into the paragraph above.

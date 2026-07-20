@@ -18,6 +18,13 @@
 >   science-critical pipeline: the tests prove a changed result comes from the *settings*, not a bug. The
 >   unit / golden / invariant layers must stay green; the default snapshot is meant to fail on an intentional
 >   default-config change (update its baseline then). See `tests/README.md`.
+> - **Update BOTH dictionary files whenever a gold-card column changes.** When you add / rename / remove a
+>   column in `GOLD_COLS` (`build/gold_unified_sheet.py`), also: (1) add or edit its row in
+>   `docs/gold_data_dictionary.md` (what it means, how it is derived, its values, and keep the section's
+>   **Source** line current), and (2) regenerate the Word copy:
+>   `pandoc docs/gold_data_dictionary.md -o docs/gold_data_dictionary.docx`, then re-upload that `.docx` to the
+>   team Drive (it is gitignored, so it does not travel with the repo). **Gotcha:** always leave a blank line
+>   before every markdown table, or pandoc/GitHub merge it into the paragraph above and it renders as run-on text.
 > - **Backlog:** do a broad server sweep for *other* formulation data we may be missing (Spencer's note
 >   2026-07-15 — "we may have a lot more on the server than we think"). Future task, not blocking.
 
