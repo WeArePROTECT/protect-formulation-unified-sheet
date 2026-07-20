@@ -18,8 +18,10 @@ columns for every piece of evidence — Is it safe? Does it grow? Does it beat t
 has a filled-in "report card," the team can rank them and decide which move forward. That master table is
 "the unified sheet."
 
-Our specific job (me + you + Alex) is the **plumbing**: gather the scattered evidence, clean it, and stack it
-into that one table. The biologists then set the pass/fail bars.
+Our specific job (me + you + Alex) is the **plumbing**: gather the scattered evidence, clean it, stack it into
+that one table, and give a first-pass way to rank the strains. The biologists then set the pass/fail bars. And
+crucially, we build everything as **switches the biologists control**: which data is plugged in, how each column
+is computed, and how the columns combine into a decision are all settings they can change, not code they'd edit.
 
 ---
 
@@ -39,38 +41,41 @@ finished dish. We never cook straight from the messy raw files; we prep each one
 
 ---
 
-## What I've built so far (and why)
+## What we've built (and why)
 
-| Piece | In plain English | Why it exists | How it works (briefly) |
-|---|---|---|---|
-| **`lib_ids.py`** — the ID cleaner | A "universal translator" for strain names | So data from different people about the same strain actually lines up | Takes any messy label, strips spaces/suffixes, throws out non-strain junk (like pathogen labels), and returns one clean form: `ASMA-3913` |
-| **`build_10_identity.py` → `identity_spine`** — the roster | The master list of all strains — the empty report card with just the row labels | It's the backbone everything else attaches to. Build the roster first, then fill in stats | Reads the official stock list (3,972 strains), then tries to add each one's species (what kind of bacteria). Writes it out as a clean table |
-| **`build/README.md`** — the build map | A checklist of every step, in order, with status | So we (and Alex) can see what's done, what's next, and what's blocked | A table listing each script, what it produces, and whether it's ready to build |
-| **`docs/*` (scorecard, proposal, sheet-map, guides)** | The planning + team-facing docs | So the team agrees on the plan before we pour in effort, and so decisions are written down | Markdown docs you can read and share |
+The report card is now filled in for all three gates, plus a fourth "relevance" block and a way to rank the
+strains. In plain English:
 
-**The most useful thing the roster already told us:** of 3,972 strains, only **5%** had their species filled
-in from the file we had. That's not a failure — it's a *finding*. It tells us precisely what to ask Alex for
-(the species + a name-matching map for the other 95%). We turned a vague "we need Alex's help" into a
-specific, answerable request.
+| Piece | In plain English | Why it exists |
+|---|---|---|
+| **The roster** (`identity_spine`) | The list of all strains, the report card's row labels | The backbone everything attaches to: 780 strains, each with its species and how many isolates it has |
+| **Safety columns** | Does it harm the patient? (hemolysis + measured antibiotic resistance + resistance genes) | The first gate; three screens from Cassandra, Sun-Young, and Alex |
+| **Viability column** | Can we grow it? (does it grow in lung-mimic fluid) | The second gate; Sun-Young's growth screen |
+| **Competition columns** | Does it beat the pathogen? (how much it knocks down PA, alone and on a team) | The third gate, and the scientific heart; Sun-Young's competition screen |
+| **Relevance columns** | Is it actually a common, PA-displacing resident of real patient lungs? | Emma's metagenomics: how abundant/active it is in real airways, whether it displaces PA there, and a model prediction of metabolic competition |
+| **The ranking engine** (`heuristic_shortlist`) | Turns the report card into a ranked shortlist | Must-pass gates thin the field, then survivors are ranked, all driven by settings the team controls |
+| **The three switchboards** (config files) | The knobs the biologists turn | One file for *what data is plugged in*, one for *how each column is computed*, one for *how columns combine into a decision* |
+| **The test suite** | A safety net | 62 automated checks that confirm a settings change gives the result you intended, not a bug |
+
+**A finding worth remembering:** the strains that look best on real-world relevance (abundant in airways,
+anti-correlated with PA, predicted competitors) AND beat PA in the dish are the same handful (Gemella,
+Streptococcus, Neisseria). When independent signals agree, that's a good sign, though it is still preliminary.
 
 ---
 
-## What I propose to build next (and why)
+## What's left (and why it's not blocking)
 
-The roster is the empty report card. Next we fill in columns — one "stat sheet" (we call these **silver
-tables**) per type of measurement. Each is independent, so we can build them as data arrives:
+The report card is designed to fill in gradually, so the missing pieces just leave blank columns for now:
 
-| Next piece | What it fills in | Why it's next |
+| Still to come | What it fills in | Who / status |
 |---|---|---|
-| **hemolysis + antibiotic + AMR-gene silver tables** | The **SAFETY** columns ("does it harm the patient?") | All three files are already on the server, and together they complete a whole gate — a clean, visible win |
-| **growth-endpoint silver table** | The **VIABILITY** column ("can we actually grow it?") | Also on the server; it's a simple yes/no-grows table |
-| **competition silver table** | The **COMPETITION** column ("does it beat the pathogen?") | This is the scientific heart of the project, and I can reuse code we already wrote for the Q7 report |
-| **first "gold" join** | Stacks the above onto the roster → a real draft report card | Lets us show Adam something concrete on Thursday, even with columns still missing |
+| **Tissue + mouse results** | Two reserved columns (does it work in a tissue model, then a mouse) | Gwyn + Fatemeh; not on the server yet |
+| **Gwyn's BSL-1 safety list** | Makes the "is this a candidate?" call authoritative (right now it's an interim best-guess list) | Gwyn |
+| **Sun-Young's QC pass** | Flips the whole card from "preliminary" to final | Sun-Young, in progress |
+| **The team's real bars** | The actual pass/fail cutoffs, and whether relevance counts toward the ranking | The biologists set these; we ship best-guess defaults |
 
-**Why this order:** safety and viability are simple, self-contained, and already on the server — quick wins
-that prove the pipeline. Competition is the highest-value column. The gold join then turns separate stat
-sheets into the actual unified sheet. Missing pieces (tissue, mouse, etc.) leave blank columns that fill in
-later — the report card is designed to be filled in gradually, not all at once.
+None of these block the sheet: it already works end to end, and each new piece is a plug-in (a new column or a
+one-line settings change), not a rebuild.
 
 ---
 
@@ -78,15 +83,16 @@ later — the report card is designed to be filled in gradually, not all at once
 
 ```
   messy source files  →  [ID cleaner]  →  one clean "stat sheet" per measurement (silver)
-        (raw)                                          │
-                                                       ▼
+  (listed in data_sources.yaml)                        │
+                                                        ▼
                               the roster (identity spine)  +  all stat sheets
-                                                       │
-                                                       ▼
+                                                        │
+                                                        ▼
                         one row per strain, all columns = the UNIFIED SHEET (gold)
-                                                       │
-                                                       ▼
-                       biologists set pass/fail bars → ranked shortlist of strains
+                                                        │   gates + ranking (settings the team controls)
+                                                        ▼
+                              ranked shortlist of strains  →  the biologists decide
 ```
 
-That's the whole project in one picture. Everything I build is one labeled box in this flow.
+That's the whole project in one picture. Three switchboards sit alongside it: what data is plugged in, how each
+column is computed, and how the columns combine into a ranked decision. Everything we build is one labeled box.

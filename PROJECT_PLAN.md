@@ -225,23 +225,39 @@ best-team PA knock-down, best partner, signed synergy; + a `formulations` table)
   data dictionary on Google Drive; team announced. Message drafts moved to gitignored `correspondence/`.
 - **Emma metagenomics integration SCOPED + unblocked** (`docs/emma_metagenomics_integration_plan.md`).
 
+**2026-07-18 — ranking engine, data-source registry, full Emma relevance (all shipped to `main` + tested):**
+- **Shortlist / ranking engine** (`build/heuristic_shortlist.py` + `config/formulation_criteria.yaml`): Adam's
+  pass/fail-and-rank, config-driven (gate/rank/off + missing-data policy). Default: Safety gates, Viability +
+  Competition rank. 739 candidates -> 317 pass gates -> 87 ranked + 230 pass-but-unscreened.
+- **Data-source registry** (`config/data_sources.yaml` + `build/data_sources.py`): every source is a switch
+  (on/off, pinned path + version, machine-readable provenance). All 6 builders + the gold join refactored to read
+  it, verified byte-for-byte identical. Engine warns if a criterion depends on a disabled source. THREE config
+  layers now: data_sources (plugged in) -> thresholds (computed) -> formulation_criteria (used).
+- **Full Emma relevance block:** `silver_emma_map` (cluster_95<->ASMA, PA=737), `silver_airway_abundance`
+  (metaG + metaRS), `silver_pa_cooccurrence` (SparCC), `silver_pa_metabolic_competitor` (MIND). 7 new gold cols.
+- **Test suite:** 62 tests (engine units + golden + real-data invariants + registry provenance + Emma joins),
+  proven non-vacuous via a mutation check. Run `bash tests/run_tests.sh` after any settings change.
+
 ---
 
-## 9. Status at wind-down (2026-07-17) and next steps
+## 9. Status (2026-07-20) and next steps
 
-**Where it stands:** v0 pipeline built, verified, and shipped. 780 strains, all three gates populated (Safety +
-Viability + Competition), 167 candidates have all three measured. Preliminary (SYK pre-QC). Full current-state
-and how-to-continue are in **`agent_handoffs/2026-07-17_handoff.md`** (the entry point for the next agent).
+**Where it stands:** pipeline built, verified, tested (62 green), and shipped to `main`. 780 strains (739
+candidates); all three gates + the full Relevance block populated; config-driven ranking engine live. Everything
+is a team-owned switch across three config layers. PRELIMINARY (SYK pre-QC). Team-facing snapshot: **`STATUS.md`**.
 
-**Top next steps (for the Tuesday team meeting; SYK posts suggestions Monday):**
-1. **Pass/fail ranking formulae** (`build/heuristic_shortlist.py`) — Adam explicitly asked; config-driven,
-   provisional; must-pass Safety + Viability, rank survivors by Competition (+ Relevance).
-2. **Emma metagenomics integration** (`airway_ubiquity` + new `pa_cooccurrence`) — scoped/unblocked in the Emma plan doc.
+**Top next steps:**
+1. **Team sets the real bars** — thresholds + whether/how Relevance enters the ranking (one line in
+   `formulation_criteria.yaml`, e.g. `ranking.order: [beats_pa, pa_cooccurrence, prevalence_metag]`).
+2. **Gwyn's BSL-1 list** — replace interim `species_safety.csv` so candidacy is authoritative.
+3. **Regenerate the Word data dictionary** on Drive (stale: predates the relevance columns).
 
-**Then / as data arrives:** Gwyn's BSL-1 list (replace interim `species_safety.csv`); tissue (Gwyn) + mouse
-(Fatemeh) columns; growth-rate/lag viability; SYK QC pass (preliminary -> final); lakehouse ingestion.
+**Then / as data arrives:** tissue (Gwyn) + mouse (Fatemeh) columns; growth-rate/lag viability
+(`silver_growth_curves.py`, buildable now); SYK QC pass (preliminary -> final); lakehouse ingestion + register in
+`protect-data-manifest`.
 
-**Done checklist:** roster (strain grain) · Safety gate (hemolysis, measured + genomic AMR) · Viability gate
-(SCFM) · Competition gate (PA knock-down + synergy) · gold card (xlsx/csv/parquet + `_about`) · config-as-data ·
-interim candidate/safety list · decision logs · data dictionary (md + docx) · GitHub repo (no data) · Drive +
-team announcement · Emma integration plan.
+**Done checklist:** roster (strain grain) · Safety + Viability + Competition gates · **Relevance block (abundance
+metaG/metaRS, PA co-occurrence, MIND competitor)** · **config-driven ranking engine** · **data-source registry
+(on/off + versioning + provenance)** · three-layer team-owned config · gold card + shortlist (xlsx/csv/parquet +
+`_about`/`_switchboard`) · interim candidate/safety list · decision logs (ADRs) · data dictionary (md; docx
+stale) · **62-test suite** · GitHub repo (no data, on `main`) · `STATUS.md` snapshot.

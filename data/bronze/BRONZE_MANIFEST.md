@@ -56,18 +56,19 @@ Last updated: 2026-07-15. Preliminary flags reflect owner notes at that date —
 |---|---|---|---|
 | `/usr2/people/alex.styer/protect/ASMA/gapmind-carbon-rules.tsv`, `gapmind-aa-rules.tsv`, `gapmind-manifest.tsv`, `c-sources.xlsx` | Alex Styer | In-silico metabolic capabilities + suggested partners | `silver_gapmind` (Alex) |
 
-## RELEVANCE  *(derived, later)*
+## RELEVANCE  *(BUILT 2026-07-18: airway abundance + PA co-occurrence + MIND metabolic competitor)*
 
-Use Emma's **`final_dataset_clean/`** only (canonical; other `analysis_cluster*` variants are outdated). Full
-scoping + join recipe: `docs/emma_metagenomics_integration_plan.md`.
+Use Emma's **`final_dataset_clean/`** only (canonical, built 2026-06-18; the `analysis_cluster*` variants are
+outdated, and the sibling `PRO_metaRS_actuallast/` is raw fastq only, not a newer processed set). All Emma data
+joins to our strains via **cluster_95 ids (which ARE our ASMA genomes); PA = cluster 737**. ADR:
+`docs/decisions/relevance_emma_decisions.md`. (Original scoping: `docs/emma_metagenomics_integration_plan.md`.)
 
 | Source (exact path) | Owner | Holds | Feeds |
 |---|---|---|---|
-| `Zengler_Lab/Emma/final_dataset_clean/ogu_species.tsv` (species x samples; this one is metaRS, metaG species table TBD) | Emma | per-species airway abundance | `silver_airway_abundance` -> `airway_ubiquity` |
-| `Zengler_Lab/Emma/final_dataset_clean/sparcc_PApos/out_metaG/median_correlation.tsv` + `pvalues.tsv` | Emma | SparCC co-occurrence with PA (**PA = cluster 737**) | `silver_pa_cooccurrence` -> new `pa_cooccurrence` |
-| `Zengler_Lab/Emma/custom_database/genome_to_cluster_95.map` + `genome_to_species_full.map` | Emma | cluster_95 id -> ASMA / species (keyed by our ASMA ids) | joins Emma's metaG data to our strains |
-| `Zengler_Lab/Emma/final_dataset_clean/MIND/data/MIND_PA_competitors_per_sample.tsv` | Emma | metabolic competitors of PA (optional) | future `pa_metabolic_competitor` |
-| `patient_sample_isolate_linkage` v4 (`Arkin_Lab/protect_data/patient_sample_isolate_linkage_data/`) | Arkin data | ASMA_id -> patient (patient prevalence) | `silver_airway_abundance` |
+| `Zengler_Lab/Emma/custom_database/genome_to_cluster_95.map` + `genome_to_species_full.map` | Emma | cluster_95 id <-> ASMA / species (keyed by our ASMA ids) | `silver_emma_map` (the join backbone) |
+| `Zengler_Lab/Emma/final_dataset_clean/multiomics_paired_depthfiltered_raw.tsv` (cluster x 149 metaG + 149 metaRS, raw counts) | Emma | airway abundance, DNA + RNA | `silver_airway_abundance` -> `abundance_/prevalence_metag`, `_metars` |
+| `Zengler_Lab/Emma/final_dataset_clean/sparcc_PApos/out_metaG/median_correlation.tsv` + `pvalues.tsv` | Emma | SparCC co-occurrence with PA (PA-positive samples) | `silver_pa_cooccurrence` -> `pa_cooccurrence` (+`_p`) |
+| `Zengler_Lab/Emma/final_dataset_clean/MIND/data/MIND_PA_competitors_per_sample.tsv` | Emma | MIND metabolic-competitor prediction (focal PA=737) | `silver_pa_metabolic_competitor` -> `pa_metabolic_competitor` |
 
 ## NOT YET ON SERVER (can't be bronze until delivered)
 - **Tissue damage + tissue competition** — Gwyn (local). | **Mouse** — Fatemeh (local). | **BSL-1 list** — Gwyn.

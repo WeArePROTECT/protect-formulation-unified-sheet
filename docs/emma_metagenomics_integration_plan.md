@@ -1,5 +1,12 @@
 # Emma's Metagenomics Integration Plan (for the next agent)
 
+> **IMPLEMENTED 2026-07-18.** This scoping plan is now built and shipped: `silver_emma_map` (cluster_95<->ASMA),
+> `silver_airway_abundance` (metaG + metaRS), `silver_pa_cooccurrence` (SparCC), `silver_pa_metabolic_competitor`
+> (MIND). The authoritative record of what was built and why is the ADR **`docs/decisions/relevance_emma_decisions.md`**;
+> the exact sources are in `config/data_sources.yaml`. Kept here as the original scoping rationale. Note: we used
+> the cluster-keyed `multiomics_paired_depthfiltered_raw.tsv` for abundance (both metaG + metaRS), not the
+> metaRS-only `ogu_species.tsv`, and the reserved `airway_ubiquity` column was superseded by four labeled columns.
+
 **Ask (Sun-Young, 2026-07-17):** fold Emma's **metaG abundance** and her **PA co-occurrence** analysis into
 the sheet. Spencer agreed. This doc is the scoped plan from an exploration of Emma's directory on 2026-07-17.
 It says exactly which files to use, how to build the two columns, and the one real blocker to resolve first.

@@ -7,12 +7,17 @@ One row = one strain. Read this to orient yourself before digging into the numbe
 
 - **PRELIMINARY.** Sun-Young's wet-lab data is still pre-QC, so treat values as directional.
 - **Blank cell = "not screened yet," not "no result."** Species and genomic AMR cover nearly all strains;
-  hemolysis, measured AMR, viability, and competition cover only the subset screened so far.
-- Every threshold below is a **team-owned setting** in `config/thresholds.yaml`. Tell us and we recompute.
+  hemolysis, measured AMR, viability, competition, and relevance cover only the subset screened so far.
+- **Where each column comes from, and why:** every source (exact file, owner, version) is registered in
+  `config/data_sources.yaml`; every threshold is a team-owned setting in `config/thresholds.yaml`; the reasoning
+  behind each modeling choice is an ADR in `docs/decisions/`. The **Source** line under each section below names
+  the owner, the registry key, and the ADR. Tell us a different bar and we recompute.
 
 ---
 
 ## Identity (who the strain is)
+**Source:** ASMA stock list (Sun-Young) + GTDB taxonomy + mash strain clusters (Alex) · `data_sources.yaml` keys
+`stock_list`, `gtdb_taxonomy`, `mash_clusters` · rationale: `docs/decisions/gold_unified_sheet_decisions.md`.
 | Column | What it means | How it is derived | Values |
 |---|---|---|---|
 | `strain_group` | Internal ID for the strain (a cluster of near-identical isolates) | Alex's whole-genome clustering (mash, >99% identity groups) | integer key |
@@ -24,6 +29,8 @@ One row = one strain. Read this to orient yourself before digging into the numbe
 | `bsl_level` | Biosafety level, where known | From `species_safety.csv` | `2` for flagged pathogens; blank until assigned. **To be filled from Gwyn's BSL-1 list.** |
 
 ## Safety (does it harm the patient)
+**Source:** hemolysis blood-agar screen (Cassandra, via Jake), measured antibiotic panel (Sun-Young),
+AMRFinderPlus genes (Alex) · `data_sources.yaml` keys `hemolysis`, `amr_measured`, `amr_genomic`.
 | Column | What it means | How it is derived | Values |
 |---|---|---|---|
 | `hemolysis_beta` | Does it break down red blood cells (beta-hemolysis) | Cassie's blood-agar screen; worst-case across the strain's isolates (Y if any isolate or timepoint was positive) | `Y` / `N` / blank (not determined). Beta-hemolysis is the main "could harm the patient" flag |
@@ -32,6 +39,8 @@ One row = one strain. Read this to orient yourself before digging into the numbe
 | `amr_gene_count` | Number of resistance genes in its genome | Alex's AMRFinder (AMR-type elements); worst-case across isolates | integer. A genomic complement to the measured AMR |
 
 ## Viability (can we grow and make it)
+**Source:** SCFM growth-endpoint screen (Sun-Young) · `data_sources.yaml` key `growth_endpoint` · rationale:
+`docs/decisions/viability_stat_sheet_decisions.md`.
 | Column | What it means | How it is derived | Values |
 |---|---|---|---|
 | `grows_scfm` | Does it grow in SCFM (lung-mimic fluid) | Sun-Young's `Growth_endpoint`, background-subtracted; Y if corrected SCFM OD is at least the cutoff (default 0.1) and above the no-carbon control; blank if it did not grow even in rich media (cannot tell). Best-case across isolates | `Y` / `N` / blank (inconclusive) |
@@ -39,6 +48,8 @@ One row = one strain. Read this to orient yourself before digging into the numbe
 | `mucin_lift` | Growth boost from adding mucin (a prebiotic signal) | SCFM-plus-mucin OD minus SCFM OD | number; positive = mucin helps this strain grow |
 
 ## Competition (does it beat PA)
+**Source:** SynCom competition screen (Sun-Young) · `data_sources.yaml` key `competition` · rationale:
+`docs/decisions/competition_stat_sheet_decisions.md`.
 Values are percent knock-down of *P. aeruginosa* (0 = PA grew freely, 100 = fully blocked; can be negative if the strain slightly helped PA). Headline pathogen is PA14_KEH108. Repeat wells collapsed by median, best result taken across the strain's isolates.
 | Column | What it means | How it is derived | Values |
 |---|---|---|---|
@@ -54,7 +65,10 @@ Values are percent knock-down of *P. aeruginosa* (0 = PA grew freely, 100 = full
 | `tissue` | Tissue-model result (PA reduction on airway tissue) | Gwyn, not on the server yet |
 | `mouse` | Mouse-model result | Fatemeh, not on the server yet |
 
-## Relevance (how common the strain is in real patient airways — Emma's metagenomics)
+## Relevance (how common / PA-displacing the strain is in real patient airways — Emma's metagenomics)
+**Source:** Emma's `final_dataset_clean` (Zengler lab): airway abundance (multiomics), PA co-occurrence (SparCC on
+PA-positive samples), MIND metabolic model · `data_sources.yaml` keys `emma_cluster_map`, `airway_abundance`,
+`pa_cooccurrence`, `pa_metabolic_competitor` · rationale: `docs/decisions/relevance_emma_decisions.md`.
 Joined to our strains via Emma's cluster_95 ids (which trace back to our ASMA genomes). This is at
 species/cluster resolution (coarser than strain), so several strains can share one cluster's value; blank if
 the strain is not in Emma's reference set. **metaG = DNA (who is PRESENT); metaRS = RNA (who is ACTIVE).**
