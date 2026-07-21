@@ -108,6 +108,6 @@ This is built to change. Tell us — anything from "call it resistant at 30%, no
 - `build/` — the pipeline (`run_all.sh` runs it) · `tests/` — the test suite (`bash tests/run_tests.sh`)
 - `config/` — `data_sources.yaml` (what's plugged in), `thresholds.yaml` (how values compute), `formulation_criteria.yaml` (how columns rank) — all team-owned
 - `data/` — `bronze/BRONZE_MANIFEST.md` (source pointers, tracked) + `reference/species_safety.csv` (tracked); the roster / `silver/` / `gold/` tables are **generated, not in the repo** (run `run_all.sh`)
-- `docs/` — `gold_data_dictionary.md` (every column explained), `plain_english_guide.md`, `decisions/` (ADRs), `data_readiness_scorecard.md`, `syk_phenotype_sheet_map.md`
+- `docs/` — `how_to_run_and_tune.md` (operator cheat sheet: change a setting, re-run, read the result), `gold_data_dictionary.md` (every column explained), `plain_english_guide.md`, `decisions/` (ADRs), `data_readiness_scorecard.md`, `syk_phenotype_sheet_map.md`
 
 *Generated data in `data/` is reproducible from the code via `bash build/run_all.sh`.*
