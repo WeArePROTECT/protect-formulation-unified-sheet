@@ -5,6 +5,9 @@ Owner: Spencer Long (data integration, with Alex Styer). Questions or change req
 
 > **Status: PRELIMINARY DRAFT.** The numbers move as Sun-Young's phenotype data finishes QC and as tissue,
 > mouse, and the BSL list arrive. **Nothing here is a final decision.** The biologists set every threshold.
+>
+> **Update 2026-07-28:** a preliminary **tissue** block is now in the sheet (7 strains, supplementary and
+> non-gating); see the new Tissue rows below and `docs/tissue_provenance_and_method.md`. Test suite now 67.
 
 ---
 
@@ -19,7 +22,7 @@ PA-displacing resident of real patient airways?).
 - Built by a reproducible bronze -> silver -> gold pipeline. Lives on GitHub (code only, no ASMA data); the card
   itself is on the team Google Drive.
 - Everything is a **team-owned switch**: thresholds, the pass/fail-and-rank logic, and which data sources are
-  plugged in are all config files you can change, with 62 automated tests that confirm a change did what you
+  plugged in are all config files you can change, with 67 automated tests that confirm a change did what you
   intended and not something a bug caused.
 
 ## What we've built (the machinery, done)
@@ -28,7 +31,7 @@ PA-displacing resident of real patient airways?).
   gates thin the field, then rank the survivors, all dialed from `config/formulation_criteria.yaml`.
 - A **data-source registry** (`config/data_sources.yaml`): every source has an on/off switch, a pinned path +
   version (machine-readable provenance), so swapping in a newer data version is a one-line change.
-- A **test suite** (62 tests) covering the engine logic, the data joins, and provenance.
+- A **test suite** (67 tests) covering the engine logic, the data joins, and provenance.
 
 ---
 
@@ -47,6 +50,7 @@ yet," not "no result." Every column's meaning + source + values is in `docs/gold
 | **Relevance** | `abundance_metag`, `prevalence_metag`, `abundance_metars`, `prevalence_metars` | how common/abundant it is in real patient airways, by DNA (present) and RNA (active) | metagenomics, `final_dataset_clean` (Emma, Zengler lab) | 673/739 |
 | **Relevance** | `pa_cooccurrence` (+ `_p`) | does it co-occur with, or displace, PA in real lungs | SparCC network on PA-positive samples (Emma) | 673/739 |
 | **Relevance** | `pa_metabolic_competitor` | model-**predicted** strength as a metabolic competitor of PA | MIND metabolic model (Emma) | 558/739 |
+| **Tissue** *(supplementary, non-gating; PRELIMINARY)* | `tissue`, `tissue_damage` | best PA suppression on airway tissue (efficacy) + the strain's own epithelial-barrier effect (safety) | Gwyneth's own computed airway-tissue studies (mCherry + Lucifer-Yellow); every value traced in `docs/tissue_provenance_and_method.md` | 7 strains (5 studies) |
 
 **Early signal (directional):** the candidates that are abundant airway residents, anti-correlate with PA in
 real lungs, *and* beat PA in the dish are **Gemella, Streptococcus, and Neisseria** species. Several are also
@@ -56,7 +60,7 @@ preliminary.
 ## Data we are STILL WAITING ON (to source in)
 | Data | Owner | Status | What it fills / unblocks |
 |---|---|---|---|
-| **Tissue model** (PA reduction on airway tissue) | Gwyn | off-server (local, in analysis) | the reserved `tissue` column |
+| **Tissue: sign-off + remaining studies** | Gwyn | preliminary block now in (7 strains); awaiting her sign-off on the two readouts + her Drive-only competition mCherry | confirms the current tissue numbers + fills the efficacy side for her M21 lead consortia (details: `docs/tissue_provenance_and_method.md` Section 10) |
 | **Mouse model** | Fatemeh | off-server (local) | the reserved `mouse` column |
 | **BSL-1 safety list** | Gwyn | not yet delivered | replaces our interim candidate/safety list -> makes `is_candidate` / `bsl_level` authoritative |
 | **Growth-curve viability** (growth rate / lag) | Sun-Young (on server) | buildable, not built yet | adds rate/lag detail to the Viability gate (beyond grow / no-grow) |
@@ -71,6 +75,9 @@ preliminary.
   replaced by Gwyn's BSL-1 list.
 - **The Relevance columns are on the card but NOT yet in the ranking.** Whether (and how) to rank on airway
   abundance, PA co-occurrence, or the predicted competitor is the team's call, and it is a one-line change.
+- **Tissue is supplementary and not in any gate or ranking.** It is Gwyn's own computed data for the studies she
+  has finished so far (7 strains, preliminary). Exactly what each number is and where it came from is in
+  `docs/tissue_provenance_and_method.md`; what is still missing is its Section 10 (open items).
 - **You control every threshold.** Tell us the bar (for example "call it resistant at 30%, not 50%," or "require
   growth in SCFM," or "rank on co-occurrence too") and we re-run. You do not adapt to the sheet; it adapts to you.
 

@@ -242,16 +242,18 @@ best-team PA knock-down, best partner, signed synergy; + a `formulations` table)
   layers now: data_sources (plugged in) -> thresholds (computed) -> formulation_criteria (used).
 - **Full Emma relevance block:** `silver_emma_map` (cluster_95<->ASMA, PA=737), `silver_airway_abundance`
   (metaG + metaRS), `silver_pa_cooccurrence` (SparCC), `silver_pa_metabolic_competitor` (MIND). 7 new gold cols.
-- **Test suite:** 62 tests (engine units + golden + real-data invariants + registry provenance + Emma joins),
-  proven non-vacuous via a mutation check. Run `bash tests/run_tests.sh` after any settings change.
+- **Test suite:** 67 tests (engine units + golden + real-data invariants + registry provenance + Emma joins
+  + tissue source-integrity), proven non-vacuous via a mutation check. Run `bash tests/run_tests.sh` after any settings change.
 
 ---
 
 ## 9. Status (2026-07-20) and next steps
 
-**Where it stands:** pipeline built, verified, tested (62 green), and shipped to `main`. 780 strains (739
-candidates); all three gates + the full Relevance block populated; config-driven ranking engine live. Everything
-is a team-owned switch across three config layers. PRELIMINARY (SYK pre-QC). Team-facing snapshot: **`STATUS.md`**.
+**Where it stands:** pipeline built, verified, tested (67 green), and shipped to `main`. 780 strains (739
+candidates); all three gates + the full Relevance block populated; config-driven ranking engine live; a
+preliminary, non-gating **tissue** block (7 strains, Gwyn's own computed data) merged 2026-07-28
+(`docs/tissue_provenance_and_method.md`). Everything is a team-owned switch across three config layers.
+PRELIMINARY (SYK pre-QC). Team-facing snapshot: **`STATUS.md`**.
 
 **Top next steps:**
 1. **Team sets the real bars** — thresholds + whether/how Relevance enters the ranking (one line in
@@ -259,7 +261,8 @@ is a team-owned switch across three config layers. PRELIMINARY (SYK pre-QC). Tea
 2. **Gwyn's BSL-1 list** — replace interim `species_safety.csv` so candidacy is authoritative.
 3. **Regenerate the Word data dictionary** on Drive (stale: predates the relevance columns).
 
-**Then / as data arrives:** tissue (Gwyn) + mouse (Fatemeh) columns; growth-rate/lag viability
+**Then / as data arrives:** more tissue (Gwyn: her sign-off + Drive-only competition mCherry, see
+`docs/tissue_provenance_and_method.md` Section 10) + mouse (Fatemeh) columns; growth-rate/lag viability
 (`silver_growth_curves.py`, buildable now); SYK QC pass (preliminary -> final); lakehouse ingestion + register in
 `protect-data-manifest`.
 
@@ -267,4 +270,4 @@ is a team-owned switch across three config layers. PRELIMINARY (SYK pre-QC). Tea
 metaG/metaRS, PA co-occurrence, MIND competitor)** · **config-driven ranking engine** · **data-source registry
 (on/off + versioning + provenance)** · three-layer team-owned config · gold card + shortlist (xlsx/csv/parquet +
 `_about`/`_switchboard`) · interim candidate/safety list · decision logs (ADRs) · data dictionary (md; docx
-stale) · **62-test suite** · GitHub repo (no data, on `main`) · `STATUS.md` snapshot.
+stale) · **preliminary tissue block (7 strains, non-gating)** · **67-test suite** · GitHub repo (no data, on `main`) · `STATUS.md` snapshot.

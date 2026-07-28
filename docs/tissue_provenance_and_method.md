@@ -4,7 +4,7 @@
 which of Gwyneth's files (down to the sheet and cell), how we derived each number, why, what it covers, and why
 it is preliminary. If anyone ever asks "where did this tissue number come from?", the answer is here.
 
-**Status:** active · **Created:** 2026-07-21 · **Owner:** Spencer (+ Alex) · **Code:** `build/silver_tissue.py`
+**Status:** active · **Created:** 2026-07-21 · **Last updated:** 2026-07-28 (merged to `main`) · **Owner:** Spencer (+ Alex) · **Code:** `build/silver_tissue.py`
 **Data state:** **PRELIMINARY.** Gwyneth's tissue program is mid-analysis; this is her own computed data for the
 subset of studies she has finished. Tissue is a **supplementary, non-gating** confirmation layer on the sheet
 (the sheet's decisions run on safety + viability + competition; tissue is not a gate). Known gaps and what we
@@ -157,5 +157,31 @@ so it strengthens the evidence rather than changing the numbers.
   cells), bump the `version` in `config/data_sources.yaml`, re-run. No code change needed.
 - **To remove tissue entirely:** set `tissue: enabled: false` in `data_sources.yaml` (columns go blank), or
   revert the commit.
+
+## 10. Open items (tracked so they are not forgotten)
+
+Tissue is in the sheet but PRELIMINARY. These are the specific things still outstanding. None block the sheet
+(tissue is non-gating); each is an append or a confirmation, not a code change.
+
+1. **Gwyneth's sign-off (flips preliminary → confirmed).** Two questions, detailed in
+   `docs/tissue_gaps_for_gwyn.md`:
+   - which readout is her **headline PA-suppression** number (so `tissue` cites the metric she would), and
+   - is **control-subtracted % passage** the right definition of "tissue damage" for `tissue_damage`.
+2. **Her competition mCherry (the efficacy "lionshare").** The PA-suppression analyses for her M21 lead
+   consortia, `796/797` (NM+NB), `757/758` (BL+NM), and the mCherry side of `739/740`, are **Drive-only**
+   (native Google Sheets, not on the server), so the efficacy side for those consortia is not yet filled. She
+   either web-downloads each (drive.google.com > Download, a two-minute add per study on our side) or confirms
+   we may cite her Competition Vade Mecum numbers as preliminary. The inventory-grounded split of what is
+   Drive-only vs not-yet-analyzed is in `gahr/docs/tissue_data_still_missing_2026-07-21.md`, grounded in the
+   full server catalog `gahr/docs/full_data_catalog_2026-07-21.md`.
+3. **The M21 CF arm.** We used the **WT arm only** for the two M21 barrier studies (701/702, 739/740). 739/740
+   shows a significant BL+mucin barrier disruption on CF (+4.06, p=0.005); if Gwyneth wants the CF arm counted,
+   we add it for both M21 studies (Section 8, item 4).
+4. **Broader coverage.** 7 strains from 5 of her ~80 tissue/competition studies. Each additional computed study
+   is an append when it lands.
+
+**When any of these resolves:** append rows to the two source CSVs (Section 9), bump `version` in
+`config/data_sources.yaml`, re-run `bash build/run_all.sh && bash tests/run_tests.sh`. The dated history of what
+was added when is in the ADR change log (`docs/decisions/tissue_stat_sheet_decisions.md`).
 
 *Any tissue number on the card that is not reproducible from this document is a bug, please report it.*

@@ -28,7 +28,8 @@ or server access. To build it yourself from source: `bash build/run_all.sh` -> `
 | **Viability** | grows in SCFM?, SCFM growth (OD), mucin lift (prebiotic signal) |
 | **Competition** | best PA knock-down alone / on a team, best partner, does-teaming-help (synergy) |
 | **Relevance** | airway abundance + prevalence (metaG/DNA + metaRS/RNA), PA co-occurrence, predicted PA metabolic competitor |
-| **Reserved** (blank, fill later) | tissue, mouse |
+| **Tissue** *(supplementary, non-gating, PRELIMINARY)* | `tissue` (best PA suppression on airway tissue), `tissue_damage` (the strain's own epithelial-barrier effect); 7 strains so far, from Gwyn's own computed studies |
+| **Reserved** (blank, fill later) | mouse |
 | **Decision** | verdict + reason — *filled once the team sets the thresholds* |
 
 > **Every column explained:** see **`docs/gold_data_dictionary.md`** for what each column means, how it was
@@ -79,7 +80,7 @@ The machine-readable registry is **`config/data_sources.yaml`** (every source's 
 and the columns it provides); **`data/bronze/BRONZE_MANIFEST.md`** is the human-readable companion. In short:
 hemolysis (Cassandra), phenotype screens — competition / antibiotics / growth (Sun-Young), genomics — species,
 strain groups, AMR genes (Alex), airway metagenomics — abundance / PA co-occurrence / MIND (Emma, Zengler lab),
-with tissue (Gwyn) and mouse (Fatemeh) to come.
+with tissue (Gwyn) now partially in (preliminary, 7 strains; see below) and mouse (Fatemeh) to come.
 
 ## Why we built each piece the way we did
 Decision records (options considered, what we chose, why, what would change it) are in **`docs/decisions/`** —
@@ -91,11 +92,14 @@ competition, viability, the gold card, and the team-owned-thresholds principle.
 **Done:** strain roster (780 strains, 739 candidates) · all three gates (Safety + Viability + Competition) · the
 Relevance block (airway abundance metaG+metaRS, PA co-occurrence, MIND competitor) · a config-driven ranking
 engine · a data-source registry (on/off + versioning + provenance) · three-layer team-owned config · the card +
-shortlist + an `_about`/`_switchboard` explainer · a 62-test suite. Full snapshot: [`STATUS.md`](STATUS.md).
+shortlist + an `_about`/`_switchboard` explainer · a 67-test suite · a preliminary tissue block (7 strains).
+Full snapshot: [`STATUS.md`](STATUS.md).
 
 **Still needed (asks to the team):**
 - **Gwyn's BSL-1 list** → finalize the candidate/safety set (interim list in place now).
-- **Tissue** (Gwyn) + **mouse** (Fatemeh) data on the server → fill those columns.
+- **Tissue** (Gwyn): a preliminary block is now in (7 strains); still need her **sign-off** on the two readouts
+  and her **Drive-only competition mCherry** files, see `docs/tissue_provenance_and_method.md` (Section 10).
+  **Mouse** (Fatemeh) data on the server → fill the mouse column.
 - Sun-Young's **QC** on the phenotype data → flip the card from preliminary to final.
 - The team's **thresholds + ranking** → we ship strawman defaults; you set the real bars (and whether relevance ranks).
 
@@ -108,6 +112,6 @@ This is built to change. Tell us — anything from "call it resistant at 30%, no
 - `build/` — the pipeline (`run_all.sh` runs it) · `tests/` — the test suite (`bash tests/run_tests.sh`)
 - `config/` — `data_sources.yaml` (what's plugged in), `thresholds.yaml` (how values compute), `formulation_criteria.yaml` (how columns rank) — all team-owned
 - `data/` — `bronze/BRONZE_MANIFEST.md` (source pointers, tracked) + `reference/species_safety.csv` (tracked); the roster / `silver/` / `gold/` tables are **generated, not in the repo** (run `run_all.sh`)
-- `docs/` — `how_to_run_and_tune.md` (operator cheat sheet: change a setting, re-run, read the result), `gold_data_dictionary.md` (every column explained), `plain_english_guide.md`, `decisions/` (ADRs), `data_readiness_scorecard.md`, `syk_phenotype_sheet_map.md`
+- `docs/` — `how_to_run_and_tune.md` (operator cheat sheet: change a setting, re-run, read the result), `gold_data_dictionary.md` (every column explained), `plain_english_guide.md`, `decisions/` (ADRs), `data_readiness_scorecard.md`, `syk_phenotype_sheet_map.md`, `tissue_provenance_and_method.md` (tissue: what / where from / how / what is still missing), `tissue_gaps_for_gwyn.md` (tissue questions for Gwyn), `assay_asma_id_lookup.md` (arrayed assay isolate per strain group, for SYK)
 
 *Generated data in `data/` is reproducible from the code via `bash build/run_all.sh`.*
