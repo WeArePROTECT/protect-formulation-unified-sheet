@@ -18,11 +18,13 @@ One row = one strain. Read this to orient yourself before digging into the numbe
 ## Identity (who the strain is)
 **Source:** ASMA stock list (Sun-Young) + GTDB taxonomy + mash strain clusters (Alex) · `data_sources.yaml` keys
 `stock_list`, `gtdb_taxonomy`, `mash_clusters` · rationale: `docs/decisions/gold_unified_sheet_decisions.md`.
+`assay_asma_id` is derived from which isolates appear in the hemolysis / measured-AMR / growth assays (see below).
 
 | Column | What it means | How it is derived | Values |
 |---|---|---|---|
 | `strain_group` | Internal ID for the strain (a cluster of near-identical isolates) | Alex's whole-genome clustering (mash, >99% identity groups) | integer key |
-| `representative_asma_id` | The isolate that stands in for the strain (the one to pull / that assays used) | The group's representative from the clustering | e.g. `ASMA-3643` |
+| `representative_asma_id` | The **genomically** representative isolate of the strain | The group's representative from Alex's whole-genome clustering | e.g. `ASMA-3643` |
+| `assay_asma_id` | The **arrayed isolate actually used in the wet-lab phenotype assays** (growth, measured-AMR, hemolysis), shown next to the genomic rep so you can pull the validated, workable stock. Often a different isolate of the same strain group | The isolate common to every one of those three assays that ran for the group (set intersection of the assay tables). Blank if none ran; the few groups that used two isolates show both, `;`-joined. Method + coverage: `docs/assay_asma_id_lookup.md` | e.g. `ASMA-2260`; differs from `representative_asma_id` in **299 of 717** assayed groups |
 | `genus`, `species` | What kind of bacterium it is | Alex's GTDB-Tk classification of the representative genome. GTDB adds suffixes like `_B` as part of its naming | e.g. `Neisseria`, `Neisseria mucosa` (blank if unclassified) |
 | `n_isolates` | How many isolates in the collection belong to this strain | Size of the genome cluster | integer (higher = more copies of this strain in the collection) |
 | `is_candidate` | Is this a plausible probiotic candidate | `FALSE` if the species/genus is a known pathogen or opportunist (`species_safety.csv`), else `TRUE` | TRUE / FALSE. **TRUE means "not a known pathogen," NOT "safety cleared."** |

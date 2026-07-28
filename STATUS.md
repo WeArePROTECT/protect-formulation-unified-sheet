@@ -41,7 +41,7 @@ yet," not "no result." Every column's meaning + source + values is in `docs/gold
 
 | Gate | Card columns | What it tells you | Source (owner) | Candidate coverage |
 |---|---|---|---|---|
-| **Identity** | `strain_group`, `species`, `n_isolates`, `is_candidate` | which strain, what it is, candidate vs known pathogen | ASMA stock list (SYK) + GTDB taxonomy + mash strain clusters (Alex) | 692/739 have species |
+| **Identity** | `strain_group`, `species`, `n_isolates`, `representative_asma_id`, `assay_asma_id`, `is_candidate` | which strain, what it is, the genomic rep + the arrayed isolate used in the wet-lab assays, candidate vs known pathogen | ASMA stock list (SYK) + GTDB taxonomy + mash strain clusters (Alex) | 692/739 species; assay isolate for 717 groups |
 | **Safety** | `hemolysis_beta` | breaks down red blood cells (main "could harm the patient" flag) | blood-agar screen (Cassandra, via Jake) | 624/739 |
 | **Safety** | `amr_resistance_count_prov` | measured resistance across 6 antibiotics | antibiotic screen (Sun-Young) | 663/739 |
 | **Safety** | `amr_gene_count` | resistance genes in the genome | AMRFinderPlus (Alex) | 739/739 |

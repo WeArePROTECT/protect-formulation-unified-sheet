@@ -32,7 +32,7 @@ SAFE_AGG = CFG["gold"]["safety_aggregation"]        # worst_case
 COMP_AGG = CFG["gold"]["competition_aggregation"]   # best_case
 
 GOLD_COLS = [
-    "strain_group", "representative_asma_id", "genus", "species", "n_isolates",
+    "strain_group", "representative_asma_id", "assay_asma_id", "genus", "species", "n_isolates",
     "is_candidate", "candidate_review", "bsl_level",
     "hemolysis_beta", "hemolysis_concern", "amr_resistance_count_prov", "amr_gene_count",
     "grows_scfm", "scfm_od", "mucin_lift",
@@ -49,6 +49,14 @@ def num(v):
         return float(v)
     except (TypeError, ValueError):
         return None
+
+
+def _asma_num(a):
+    """Numeric sort key for 'ASMA-<int>' ids (so 'ASMA-9' sorts before 'ASMA-10')."""
+    try:
+        return int(str(a).split("-")[1])
+    except (IndexError, ValueError):
+        return 0
 
 
 def norm_species(s):
@@ -107,10 +115,22 @@ def main():
              if is_enabled("pa_metabolic_competitor") and os.path.exists(metab_path) else {})
     by_species, by_genus = load_safety_ref()
 
+    # ASSAY ISOLATE (for SYK): the arrayed isolate actually used in the wet-lab phenotype assays
+    # (growth, measured-AMR, hemolysis). It often differs from the genomic representative; it is the
+    # isolate common to every one of those assays that ran for the group (a set intersection). Only
+    # assays whose source is enabled contribute (a disabled source is an empty dict -> skipped).
+    # Doc: docs/assay_asma_id_lookup.md.
+    assay_key_sets = [set(t) for t in (grow, amrm, hemo) if t]
+
     rows = []
     for s in strains:
         grp = s["strain_group"]
         members = grp_members.get(grp, [s["representative_asma_id"]])
+        # ASSAY ISOLATE: the member common to every assay that ran for this group (blank if none ran).
+        present = [ks & set(members) for ks in assay_key_sets]
+        present = [p for p in present if p]                       # keep only assays that ran for this group
+        common = set.intersection(*present) if present else set()
+        assay_asma_id = ";".join(sorted(common, key=_asma_num)) or None
         species, genus = s.get("species") or None, s.get("genus")
         is_cand, review, bsl = classify(species, genus, by_species, by_genus)
 
@@ -150,6 +170,7 @@ def main():
 
         rows.append({
             "strain_group": grp, "representative_asma_id": s["representative_asma_id"],
+            "assay_asma_id": assay_asma_id,
             "genus": genus, "species": species, "n_isolates": s.get("n_isolates"),
             "is_candidate": is_cand, "candidate_review": review, "bsl_level": bsl,
             "hemolysis_beta": beta, "hemolysis_concern": (beta == "Y") if beta is not None else None,
@@ -188,6 +209,9 @@ def main():
     print(f"    candidates that grow in SCFM         : {sum(1 for r in cand if r['grows_scfm']=='Y')}")
     print(f"    candidates with competition data     : {sum(1 for r in cand if r['comp_best_team_pa'] not in (None,''))}")
     print(f"    candidates with tissue data (prelim) : {sum(1 for r in cand if r['tissue'] not in (None,''))}")
+    n_assay = sum(1 for r in rows if r["assay_asma_id"])
+    n_assay_diff = sum(1 for r in rows if r["assay_asma_id"] and r["assay_asma_id"] != r["representative_asma_id"])
+    print(f"    assay isolate resolved (>=1 assay)   : {n_assay} ({n_assay_diff} differ from the genomic rep)")
     print(f"    -> ../data/gold/gold_unified_sheet.{{csv,parquet,xlsx}}")
 
 
@@ -237,6 +261,10 @@ def _about_lines():
         "The candidate list comes from data/reference/species_safety.csv, which is a TEAM-OWNED interim list",
         "meant to be replaced by Gwyn's BSL-1 list. 'candidate_review = review/unreviewed' flags strains a",
         "biologist should still vet.",
+        "",
+        "Assay isolate: 'assay_asma_id' is the arrayed isolate actually used in the growth / measured-AMR /",
+        "hemolysis assays (often a different isolate of the same strain group than the genomic",
+        "'representative_asma_id'); pull this one for wet-lab follow-up. Details: docs/assay_asma_id_lookup.md.",
         "",
         "Blank cells mean 'not screened yet', not 'no result'. Mouse / ubiquity columns fill in later; the tissue",
         "columns are now partially filled from Gwyn's PRELIMINARY (needs-review) tissue model and will change as",

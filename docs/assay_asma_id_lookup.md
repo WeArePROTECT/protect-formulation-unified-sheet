@@ -5,9 +5,11 @@ actual ASMA isolate used in the wet-lab phenotype assays (growth, in-vitro AMR, 
 genomic representative isolate. Built for Sun-Young Kim (requested 2026-07-27) so the team can pull the correct,
 experimentally-validated, **arrayed** stock for each strain group when finalizing the candidate list.
 
-> **Status: INTERIM / stopgap.** The same `assay_asma_id` value is planned to become a first-class column on the
-> gold sheet itself (and will be documented in `docs/gold_data_dictionary.md` + an ADR at that point). Once that
-> lands, this standalone file and doc can be retired.
+> **Status: NOW A FIRST-CLASS COLUMN (2026-07-28).** `assay_asma_id` is now built directly into the gold sheet
+> (`build/gold_unified_sheet.py`, placed next to `representative_asma_id`; defined in `docs/gold_data_dictionary.md`;
+> tested by `tests/test_assay_asma_id.py`). The gold column reproduces this standalone lookup exactly (verified:
+> 0 mismatches across all 717 assayed groups). This standalone file stays as the detailed companion: it adds the
+> `assays_present` and edge-case `note` columns the card omits. Regenerate it with the script below.
 
 ## Why it exists
 The gold sheet shows `representative_asma_id`, the genomically-correct representative of each strain group (from

@@ -23,7 +23,7 @@ or server access. To build it yourself from source: `bash build/run_all.sh` -> `
 ## What the card tells you (per strain)
 | Group | Columns |
 |---|---|
-| **Identity** | strain, species, # isolates, `is_candidate`, `candidate_review`, `bsl_level` |
+| **Identity** | strain, species, # isolates, `representative_asma_id` (genomic) + `assay_asma_id` (isolate used in the wet-lab assays), `is_candidate`, `candidate_review`, `bsl_level` |
 | **Safety** | beta-hemolysis, measured antibiotic resistance, genomic AMR genes |
 | **Viability** | grows in SCFM?, SCFM growth (OD), mucin lift (prebiotic signal) |
 | **Competition** | best PA knock-down alone / on a team, best partner, does-teaming-help (synergy) |
