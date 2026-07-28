@@ -27,6 +27,7 @@ REF = os.path.join(ROOT, "data", "reference")
 SILVER = os.path.join(ROOT, "data", "silver")
 GOLD = os.path.join(ROOT, "data", "gold", "gold_unified_sheet")
 SAFETY_REF = os.path.join(REF, "species_safety.csv")
+BSL_REF = os.path.join(REF, "species_bsl.csv")
 
 SAFE_AGG = CFG["gold"]["safety_aggregation"]        # worst_case
 COMP_AGG = CFG["gold"]["competition_aggregation"]   # best_case
@@ -84,6 +85,27 @@ def classify(species, genus, by_species, by_genus):
     return (level not in ("pathogen", "opportunistic"), level, bsl)
 
 
+def load_bsl_ref():
+    """species_bsl.csv -> (by_species, by_genus). Genus rows (the name has no space) let unnamed GTDB
+    genomospecies inherit a genus-level risk group; species rows win. Missing file -> empty (blank BSL).
+    This is the authoritative-but-INTERIM biosafety reference; provenance per row is in its `source`
+    column, method + caveats in docs/decisions/bsl_stat_sheet_decisions.md."""
+    by_species, by_genus = {}, {}
+    if not os.path.exists(BSL_REF):
+        return by_species, by_genus
+    for r in read_delimited(BSL_REF, ","):
+        name = (r.get("species") or "").strip()
+        if name:
+            (by_genus if " " not in name else by_species)[name] = r
+    return by_species, by_genus
+
+
+def bsl_for(species, genus, b_species, b_genus):
+    """Biosafety level for a species: species match wins, else genus fallback, else '' (unclassified)."""
+    r = b_species.get(norm_species(species)) or b_genus.get(norm_species(genus or ""))
+    return (r["bsl_level"] if r else "") or ""
+
+
 def main():
     os.makedirs(os.path.dirname(GOLD), exist_ok=True)
     strains = list(read_delimited(os.path.join(REF, "identity_strains.csv"), ","))
@@ -114,6 +136,7 @@ def main():
     metab = (load_keyed(metab_path, key="cluster_95")
              if is_enabled("pa_metabolic_competitor") and os.path.exists(metab_path) else {})
     by_species, by_genus = load_safety_ref()
+    bsl_by_species, bsl_by_genus = load_bsl_ref()
 
     # ASSAY ISOLATE (for SYK): the arrayed isolate actually used in the wet-lab phenotype assays
     # (growth, measured-AMR, hemolysis). It often differs from the genomic representative; it is the
@@ -132,7 +155,10 @@ def main():
         common = set.intersection(*present) if present else set()
         assay_asma_id = ";".join(sorted(common, key=_asma_num)) or None
         species, genus = s.get("species") or None, s.get("genus")
-        is_cand, review, bsl = classify(species, genus, by_species, by_genus)
+        is_cand, review, bsl_safety = classify(species, genus, by_species, by_genus)
+        # BSL / risk group comes from the dedicated authoritative reference (species_bsl.csv), which is
+        # comprehensive; fall back to the safety list's BSL only if a species is absent there.
+        bsl = bsl_for(species, genus, bsl_by_species, bsl_by_genus) or bsl_safety
 
         # SAFETY — worst-case across isolates
         betas = [hemo[a]["beta_hemolytic"] for a in members if a in hemo]
@@ -212,6 +238,7 @@ def main():
     n_assay = sum(1 for r in rows if r["assay_asma_id"])
     n_assay_diff = sum(1 for r in rows if r["assay_asma_id"] and r["assay_asma_id"] != r["representative_asma_id"])
     print(f"    assay isolate resolved (>=1 assay)   : {n_assay} ({n_assay_diff} differ from the genomic rep)")
+    print(f"    strains with a BSL assigned          : {sum(1 for r in rows if r['bsl_level'])}")
     print(f"    -> ../data/gold/gold_unified_sheet.{{csv,parquet,xlsx}}")
 
 
@@ -261,6 +288,10 @@ def _about_lines():
         "The candidate list comes from data/reference/species_safety.csv, which is a TEAM-OWNED interim list",
         "meant to be replaced by Gwyn's BSL-1 list. 'candidate_review = review/unreviewed' flags strains a",
         "biologist should still vet.",
+        "",
+        "BSL: 'bsl_level' is the species' biosafety level (1 / 2 / 3) from published risk-group registries,",
+        "cited per species in data/reference/species_bsl.csv. It is INTERIM (pending biosafety sign-off) and",
+        "does NOT gate anything; a blank means 'review' (an unnamed genomospecies or a mixed-risk genus).",
         "",
         "Assay isolate: 'assay_asma_id' is the arrayed isolate actually used in the growth / measured-AMR /",
         "hemolysis assays (often a different isolate of the same strain group than the genomic",

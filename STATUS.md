@@ -6,8 +6,9 @@ Owner: Spencer Long (data integration, with Alex Styer). Questions or change req
 > **Status: PRELIMINARY DRAFT.** The numbers move as Sun-Young's phenotype data finishes QC and as tissue,
 > mouse, and the BSL list arrive. **Nothing here is a final decision.** The biologists set every threshold.
 >
-> **Update 2026-07-28:** a preliminary **tissue** block is now in the sheet (7 strains, supplementary and
-> non-gating); see the new Tissue rows below and `docs/tissue_provenance_and_method.md`. Test suite now 67.
+> **Update 2026-07-28:** added a preliminary **tissue** block (7 strains, non-gating; see the Tissue rows
+> below), an **`assay_asma_id`** column (the arrayed isolate used in the wet-lab assays), and an interim,
+> cited **BSL** column (biosafety level per species). Test suite now 76.
 
 ---
 
@@ -22,7 +23,7 @@ PA-displacing resident of real patient airways?).
 - Built by a reproducible bronze -> silver -> gold pipeline. Lives on GitHub (code only, no ASMA data); the card
   itself is on the team Google Drive.
 - Everything is a **team-owned switch**: thresholds, the pass/fail-and-rank logic, and which data sources are
-  plugged in are all config files you can change, with 67 automated tests that confirm a change did what you
+  plugged in are all config files you can change, with 76 automated tests that confirm a change did what you
   intended and not something a bug caused.
 
 ## What we've built (the machinery, done)
@@ -31,7 +32,7 @@ PA-displacing resident of real patient airways?).
   gates thin the field, then rank the survivors, all dialed from `config/formulation_criteria.yaml`.
 - A **data-source registry** (`config/data_sources.yaml`): every source has an on/off switch, a pinned path +
   version (machine-readable provenance), so swapping in a newer data version is a one-line change.
-- A **test suite** (67 tests) covering the engine logic, the data joins, and provenance.
+- A **test suite** (76 tests) covering the engine logic, the data joins, and provenance.
 
 ---
 
@@ -45,6 +46,7 @@ yet," not "no result." Every column's meaning + source + values is in `docs/gold
 | **Safety** | `hemolysis_beta` | breaks down red blood cells (main "could harm the patient" flag) | blood-agar screen (Cassandra, via Jake) | 624/739 |
 | **Safety** | `amr_resistance_count_prov` | measured resistance across 6 antibiotics | antibiotic screen (Sun-Young) | 663/739 |
 | **Safety** | `amr_gene_count` | resistance genes in the genome | AMRFinderPlus (Alex) | 739/739 |
+| **Safety** | `bsl_level` | biosafety level of the species (INTERIM, cited; non-gating) | published risk-group registries (TRBA 466 / PHAC / EU 2000/54/EC), per `docs/decisions/bsl_stat_sheet_decisions.md` | 545/739 (194 left `review`) |
 | **Viability** | `grows_scfm`, `scfm_od`, `mucin_lift` | grows in lung-mimic fluid (SCFM), and mucin (prebiotic) lift | SCFM growth endpoint (Sun-Young) | 584/739 |
 | **Competition** | `comp_best_solo_pa`, `comp_best_team_pa`, `comp_synergy_pa`, `comp_best_partner` | knock-down of PA alone / on a team, and whether teaming helps | competition screen (Sun-Young) | 193/739 any PA result; 29 tested in multi-member teams |
 | **Relevance** | `abundance_metag`, `prevalence_metag`, `abundance_metars`, `prevalence_metars` | how common/abundant it is in real patient airways, by DNA (present) and RNA (active) | metagenomics, `final_dataset_clean` (Emma, Zengler lab) | 673/739 |

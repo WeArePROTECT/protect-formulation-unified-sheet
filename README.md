@@ -92,11 +92,13 @@ competition, viability, the gold card, and the team-owned-thresholds principle.
 **Done:** strain roster (780 strains, 739 candidates) · all three gates (Safety + Viability + Competition) · the
 Relevance block (airway abundance metaG+metaRS, PA co-occurrence, MIND competitor) · a config-driven ranking
 engine · a data-source registry (on/off + versioning + provenance) · three-layer team-owned config · the card +
-shortlist + an `_about`/`_switchboard` explainer · a 67-test suite · a preliminary tissue block (7 strains).
-Full snapshot: [`STATUS.md`](STATUS.md).
+shortlist + an `_about`/`_switchboard` explainer · a 76-test suite · a preliminary tissue block (7 strains) ·
+the `assay_asma_id` column + an interim, cited BSL column. Full snapshot: [`STATUS.md`](STATUS.md).
 
 **Still needed (asks to the team):**
-- **Gwyn's BSL-1 list** → finalize the candidate/safety set (interim list in place now).
+- **Gwyn's BSL-1 list** → finalize the candidate/safety set (interim list in place now). An **interim, cited
+  BSL column** is now populated from published risk-group registries (`docs/decisions/bsl_stat_sheet_decisions.md`),
+  pending her official list and a biosafety sign-off.
 - **Tissue** (Gwyn): a preliminary block is now in (7 strains); still need her **sign-off** on the two readouts
   and her **Drive-only competition mCherry** files, see `docs/tissue_provenance_and_method.md` (Section 10).
   **Mouse** (Fatemeh) data on the server → fill the mouse column.

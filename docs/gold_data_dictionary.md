@@ -29,7 +29,7 @@ One row = one strain. Read this to orient yourself before digging into the numbe
 | `n_isolates` | How many isolates in the collection belong to this strain | Size of the genome cluster | integer (higher = more copies of this strain in the collection) |
 | `is_candidate` | Is this a plausible probiotic candidate | `FALSE` if the species/genus is a known pathogen or opportunist (`species_safety.csv`), else `TRUE` | TRUE / FALSE. **TRUE means "not a known pathogen," NOT "safety cleared."** |
 | `candidate_review` | Safety review status | From `species_safety.csv` | `pathogen` / `opportunistic` (excluded), `review` (genus on a watchlist, please vet), `unreviewed` (no safety flag yet) |
-| `bsl_level` | Biosafety level, where known | From `species_safety.csv` | `2` for flagged pathogens; blank until assigned. **To be filled from Gwyn's BSL-1 list.** |
+| `bsl_level` | Biosafety level (lab containment tier) of the species, where classifiable | From `data/reference/species_bsl.csv`: the species' published risk group (EU 2000/54/EC, ABSA, TRBA 466, PHAC), cited per row; species match then genus fallback. Method: `docs/decisions/bsl_stat_sheet_decisions.md` | `1` (BSL-1, not a listed pathogen) / `2` / `3`; blank = `review` (an unnamed genomospecies, or a genus spanning RG1/RG2, left unresolved on purpose). **INTERIM, pending biosafety sign-off; to be superseded by Gwyn's official BSL-1 list.** |
 
 ## Safety (does it harm the patient)
 **Source:** hemolysis blood-agar screen (Cassandra, via Jake), measured antibiotic panel (Sun-Young),

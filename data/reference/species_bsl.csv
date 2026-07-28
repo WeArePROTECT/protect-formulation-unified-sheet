@@ -1,0 +1,134 @@
+species,rank,risk_group,bsl_level,source,note
+Streptococcus,genus,review,,TRBA 466,"spans RG1 (gordonii, thermophilus, vestibularis) to RG2 (pneumoniae, agalactiae, mitis); resolve species individually"
+Rothia,genus,review,,TRBA 466,"spans: aeria RG1, dentocariosa/mucilaginosa RG2"
+Neisseria,genus,review,,TRBA 466,"spans: some commensals RG1, others + meningitidis/gonorrhoeae RG2"
+Actinomyces,genus,review,,TRBA 466,spans RG1 to RG2; most human/oral species RG2
+Gemella,genus,review,,TRBA 466,"human species (haemolysans, sanguinis) RG2; only dog isolate palaticanis RG1"
+Granulicatella,genus,2,2,TRBA 466,adiacens and elegans both RG2 (nutritionally variant strep)
+Lacticaseibacillus,genus,1,1,TRBA 466 / PHAC,"QPS probiotic genus; paracasei/casei RG1; only L. rhamnosus RG2(TA) in TRBA, RG1 in PHAC/Swiss"
+Staphylococcus,genus,review,,TRBA 466,"spans: many CoNS RG1, but aureus/epidermidis/haemolyticus/hominis/capitis RG2"
+Corynebacterium,genus,review,,TRBA 466,spans: glutamicum RG1; diphtheriae and most clinical species RG2
+Limosilactobacillus,genus,1,1,TRBA 466,"LAB/probiotic (fermentum, reuteri) all RG1"
+Weissella,genus,1,1,TRBA 466/DSMZ,food LAB; cibaria RG1 (note W. confusa occasional opportunist)
+Micrococcus,genus,1,1,TRBA 466,luteus/lylae RG1; skin saprophytes
+Acinetobacter,genus,review,,TRBA 466,"predominantly RG2 (baumannii, ursingii); radioresistens RG1; clinical = RG2"
+Lactiplantibacillus,genus,1,1,TRBA 466,plantarum/pentosus RG1; QPS probiotic
+Pseudomonas,genus,review,,TRBA 466,"spans: putida/fluorescens RG1, aeruginosa RG2"
+Paenibacillus,genus,1,1,TRBA 466,"listed species (alvei, polymyxa, lactis, cookii) all RG1; no human RG2 species"
+Enterococcus,genus,review,,TRBA 466,"spans: many RG1 (lactis, mundtii); faecalis/faecium RG2"
+Bacillus,genus,review,,TRBA 466,spans RG1 (subtilis) to RG2 (cereus) to RG3 (anthracis); unnamed sp MUST be reviewed
+Moraxella,genus,review,,TRBA 466,"spans: bovis/caprae RG1, catarrhalis RG2"
+Brevibacillus,genus,1,1,TRBA 466,"all listed (agri, brevis, laterosporus) RG1"
+Kocuria,genus,1,1,TRBA 466,"all RG1 (rhizophila, marina, rosea, kristinae)"
+Microbacterium,genus,review,,TRBA 466,predominantly RG1; M. resistens RG2; spans
+Chryseobacterium,genus,review,,TRBA 466,"spans: arthrosphaerae RG1, indologenes/gleum RG2"
+Ralstonia,genus,review,,TRBA 466,"spans: most RG1 (pickettii RG1+), mannitolytica/paucula RG2"
+Bordetella,genus,review,,TRBA 466,spans: petrii RG1; pertussis/parapertussis/bronchiseptica RG2
+Serratia,genus,review,,TRBA 466,"spans: ficaria/fonticola RG1, marcescens/liquefaciens RG2"
+Enterobacter,genus,review,,TRBA 466,"predominantly RG2 (hormaechei, cloacae); a couple plant spp RG1; clinical = RG2"
+Klebsiella,genus,2,2,TRBA 466,"all human Klebsiella (pneumoniae, oxytoca, grimontii) RG2"
+Escherichia,genus,review,,TRBA 466,"spans: E. coli RG2 (K-12 lab strains RG1), EHEC higher; blattae RG1"
+Achromobacter,genus,review,,TRBA 466,xylosoxidans RG2; ruhlandii RG1; clinical = xylosoxidans RG2
+Stenotrophomonas,genus,review,,TRBA 466,"maltophilia RG2, nitritireducens RG1; clinical = maltophilia RG2"
+Citrobacter,genus,2,2,TRBA 466,"all listed (freundii, koseri, braakii) RG2"
+Abiotrophia,genus,2,2,TRBA 466,defectiva RG2 (nutritionally variant strep)
+Arthrobacter,genus,review,,TRBA 466,predominantly RG1; woluwensis/cumminsii/luteolus RG2; spans
+Brevibacterium,genus,review,,TRBA 466,predominantly RG1; mcbrellneri/paucivorans RG2; spans
+Latilactobacillus,genus,1,1,TRBA 466,curvatus/sakei RG1; food LAB
+Ligilactobacillus,genus,1,1,TRBA 466,salivarius/ruminis RG1; LAB
+Lysinibacillus,genus,1,1,TRBA 466,sphaericus (=Bacillus sphaericus) RG1; no human RG2 species
+Leclercia,genus,2,2,TRBA 466,adecarboxylata RG2 (only species)
+Priestia,genus,1,1,TRBA 466,megaterium/aryabhattai (=Bacillus) RG1
+Sphingomonas,genus,review,,TRBA 466,predominantly RG1; paucimobilis/parapaucimobilis RG2; spans
+Tsukamurella,genus,review,,TRBA 466,"predominantly RG2 (pulmonis, paurometabola); wratislaviensis RG1; spans"
+Pauljensenia,genus,review,,LPSN/DSMZ,"novel genus split from oral/clinical Actinomyces clade; no formal RG; likely RG2, verify"
+Rothia dentocariosa,species,2,2,TRBA 466,oral; native/prosthetic-valve endocarditis; DE and PHAC RG2
+Rothia aeria,species,1,1,TRBA 466/DSMZ,Germany RG1(+); occasional endocarditis opportunist
+Rothia mucilaginosa,species,2,2,TRBA 466,oral; opportunist bacteremia; RG2
+Streptococcus salivarius,species,2,2,TRBA 466,"oral/probiotic (K12/M18); TRBA RG2, PHAC RG1; conservative RG2"
+Streptococcus sanguinis,species,2,2,TRBA 466,viridans; endocarditis; TRBA RG2 (PHAC RG1); conservative
+Streptococcus parasanguinis,species,2,2,TRBA 466,viridans; TRBA RG2
+Streptococcus oralis,species,2,2,TRBA 466,viridans; TRBA RG2 (PHAC RG1); conservative
+Streptococcus mitis,species,2,2,TRBA 466,"viridans; TRBA and Swiss RG2, PHAC RG1; conservative RG2"
+Streptococcus gordonii,species,1,1,TRBA 466,viridans; RG1(+) opportunist
+Streptococcus infantis,species,1,1,TRBA 466,viridans/mitis group; RG1(+)
+Streptococcus vestibularis,species,1,1,TRBA 466,oral commensal; RG1
+Streptococcus hominis,species,2,2,PHAC (LPSN),Canada RG2; validly published clinical species
+Streptococcus anginosus,species,2,2,TRBA 466,anginosus group; pyogenic abscesses; RG2
+Streptococcus constellatus,species,2,2,TRBA 466,anginosus group; abscesses; RG2
+Streptococcus intermedius,species,2,2,TRBA 466,anginosus group; brain/liver abscess; RG2
+Streptococcus cristatus,species,1,1,TRBA 466,viridans; RG1(+)
+Streptococcus dentisani,species,1,1,TRBA 466/DSMZ,oral probiotic candidate; Germany RG1(+)
+Streptococcus mutans,species,2,2,TRBA 466,dental caries; RG2
+Streptococcus sobrinus,species,2,2,TRBA 466,dental caries; RG2
+Streptococcus caecimuris,species,1,1,not listed as RG2+ in TRBA/PHAC -> RG1,"mouse-cecum commensal; not registry-listed; genus spans; RG1 default, verify"
+Streptococcus pseudopneumoniae,species,2,2,TRBA 466 + PHAC,mitis group; respiratory pathogen; DE and CA both RG2
+Streptococcus vulneris,species,review,,LPSN LoRN,diabetic-foot-wound isolate; LoRN-listed pathogenicity; no formal RG number; review (likely RG2)
+Streptococcus agalactiae,species,2,2,TRBA 466,Group B strep; neonatal sepsis/meningitis; RG2
+Streptococcus peroris,species,1,1,TRBA 466,oral/mitis group; RG1(+)
+Streptococcus symci,species,review,,not RG-listed,novel oral Streptococcus; no registry entry; genus spans RG1-RG2; review
+Streptococcus thermophilus,species,1,1,TRBA 466,dairy/yogurt starter; RG1
+Streptococcus timonensis,species,review,,not RG-listed,novel mitis-group oral strep; no registry RG; relatives RG2; review
+Streptococcus vaginalis,species,review,,LPSN LoRN,on medical-importance list; no formal RG number; review
+Streptococcus viridans,species,review,,n/a,"NOT a valid species; informal viridans-group label; contains RG2 members; ID to species, treat conservatively"
+Actinomyces oris,species,2,2,TRBA 466/DSMZ,oral; Germany RG2; former A. naeslundii genospecies 2
+Actinomyces naeslundii,species,2,2,TRBA 466,oral; actinomycosis; RG2
+Gemella sanguinis,species,2,2,TRBA 466,RG2; opportunist
+Gemella haemolysans,species,2,2,TRBA 466,RG2; endocarditis opportunist
+Neisseria flavescens,species,2,2,TRBA 466,oral commensal but TRBA RG2 (PHAC RG1); conservative RG2
+Neisseria perflava,species,1,1,TRBA 466,commensal; RG1(+)
+Neisseria elongata,species,1,1,TRBA 466,commensal RG1(+); note subsp. nitroreducens is RG2 (endocarditis)
+Neisseria subflava,species,2,2,TRBA 466,oral commensal; TRBA RG2 (PHAC RG1); conservative RG2
+Neisseria mucosa,species,2,2,TRBA 466,oral commensal; TRBA RG2; conservative
+Neisseria sicca,species,2,2,TRBA 466,oral commensal; TRBA RG2; conservative
+Neisseria bacilliformis,species,2,2,TRBA 466/DSMZ,Germany RG2; clinical/invasive reports
+Neisseria cinerea,species,1,1,TRBA 466,commensal; RG1(+)
+Neisseria flava,species,1,1,TRBA 466,commensal; RG1(+)
+Neisseria macacae,species,1,1,TRBA 466,RG1
+Neisseria oralis,species,2,2,TRBA 466/DSMZ + Belgium,Germany and Belgium RG2
+Staphylococcus aureus,species,2,2,EU 2000/54/EC + TRBA 466,major pyogenic/toxin pathogen (incl. MRSA); RG2
+Staphylococcus epidermidis,species,2,2,TRBA 466,CoNS; device/prosthetic infections; RG2
+Staphylococcus capitis,species,2,2,PHAC + Belgium (LPSN),CoNS; PHAC and Belgium RG2 (older TRBA-2002 RG1); conservative RG2
+Staphylococcus haemolyticus,species,2,2,TRBA 466,CoNS; multiresistant opportunist; RG2
+Staphylococcus hominis,species,2,2,TRBA 466,CoNS; RG2
+Corynebacterium durum,species,1,1,TRBA 466,oral/respiratory commensal; RG1(+)
+Corynebacterium argentoratense,species,2,2,TRBA 466,throat; RG2
+Lacticaseibacillus paracasei,species,1,1,TRBA 466,probiotic; RG1
+Lacticaseibacillus rhamnosus,species,2,2,TRBA 466,RG2(TA) in TRBA; RG1 in PHAC/Swiss and for established probiotic strains (e.g. GG); conservative RG2
+Limosilactobacillus fermentum,species,1,1,TRBA 466,LAB/probiotic; RG1
+Lactiplantibacillus plantarum,species,1,1,TRBA 466,RG1(+); QPS probiotic (TRBA lists as Lactobacillus plantarum)
+Latilactobacillus curvatus,species,1,1,TRBA 466,food-fermentation LAB; RG1
+Enterococcus faecalis,species,2,2,TRBA 466,"opportunist (UTI, endocarditis, VRE); RG2"
+Enterococcus lactis,species,1,1,TRBA 466/DSMZ + PHAC,DE and CA both RG1 (split from E. faecium; probiotic-safe lineage)
+Granulicatella adiacens,species,2,2,TRBA 466,nutritionally variant strep; endocarditis; RG2
+Weissella cibaria,species,1,1,TRBA 466/DSMZ,food LAB; Germany RG1
+Micrococcus luteus,species,1,1,TRBA 466,skin saprophyte; RG1
+Kocuria marina,species,1,1,TRBA 466/DSMZ,RG1 (rare opportunist case reports)
+Kocuria rhizophila,species,1,1,TRBA 466,environmental; RG1
+Acinetobacter ursingii,species,2,2,TRBA 466,opportunist bacteremia; RG2
+Acinetobacter bereziniae,species,2,2,TRBA 466/DSMZ,"Germany RG2, PHAC RG1; conservative RG2"
+Moraxella catarrhalis,species,2,2,TRBA 466,"respiratory pathogen (otitis, bronchitis); RG2"
+Bacillus anthracis,species,3,3,EU 2000/54/EC + TRBA 466 + US Select Agent,ANTHRAX; RG3/BSL-3; Tier-1 Select Agent; CRITICAL
+Bacillus cereus,species,2,2,TRBA 466,emetic/diarrheal enterotoxins; RG2
+Bacillus licheniformis,species,1,1,TRBA 466,industrial; RG1(+); rare opportunist
+Bacillus paranthracis,species,2,2,ABSA/ATCC + B. cereus group,"B. cereus-group (enterotoxigenic), genomically near B. anthracis; one ATCC strain listed BSL-3; RG2, FLAG/verify strain + toxin genes"
+Bacillus velezensis,species,1,1,TRBA 466/DSMZ,DE/CA/CH all RG1; B. subtilis group biocontrol
+Brevibacillus agri,species,1,1,TRBA 466,RG1(+)
+Paenibacillus lactis,species,1,1,LPSN/DSMZ,RG1
+Paenibacillus cookii,species,1,1,LPSN/DSMZ,RG1
+Priestia megaterium,species,1,1,TRBA 466,=Bacillus megaterium; RG1(+); industrial
+Lysinibacillus sphaericus,species,1,1,TRBA 466,=Bacillus sphaericus; RG1(+); mosquito biocontrol
+Bordetella pertussis,species,2,2,EU 2000/54/EC + TRBA 466,whooping cough; RG2
+Serratia liquefaciens,species,2,2,TRBA 466/DSMZ + PHAC,DE and CA both RG2; opportunist/transfusion sepsis
+Enterobacter hormaechei,species,2,2,TRBA 466,nosocomial opportunist (cloacae complex); RG2
+Klebsiella grimontii,species,2,2,TRBA 466/DSMZ,Germany RG2; K. oxytoca complex
+Leclercia adecarboxylata,species,2,2,TRBA 466,opportunist; TRBA RG2 (some sources RG1); conservative RG2
+Ralstonia pickettii,species,1,1,TRBA 466,RG1(+); waterborne opportunist/contaminant
+Chryseobacterium arthrosphaerae,species,1,1,TRBA 466/DSMZ,Germany RG1 (rare opportunist)
+Chryseobacterium indologenes,species,2,2,TRBA 466,opportunist; RG2
+Microbacterium oxydans,species,1,1,TRBA 466,environmental; RG1
+Arthrobacter woluwensis,species,2,2,TRBA 466,rare endocarditis; RG2
+Sphingomonas olei,species,1,1,TRBA 466/DSMZ,Germany RG1; environmental
+Tsukamurella pulmonis,species,2,2,TRBA 466,opportunist (catheter/pulmonary); RG2
+Pseudomonas juntendi,species,1,1,not listed as RG2+ in TRBA/PHAC -> RG1,"P. putida group; LPSN LoRN flag but not RG2-listed; RG1 default, reviewer may reassess"
+Pseudomonas siliginis,species,1,1,not listed as RG2+ in TRBA/PHAC -> RG1,environmental (grain/flour); not registry-listed; RG1
