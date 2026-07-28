@@ -75,6 +75,13 @@ preliminary.
 - **PRELIMINARY.** Sun-Young's wet-lab data is still pre-QC, so treat all numbers as directional.
 - **`is_candidate = True` means "not a known pathogen," NOT "safety cleared."** It is a seed list to be
   replaced by Gwyn's BSL-1 list.
+- **FLAGGED FOR THE TEAM: some current candidates carry BSL-2 or higher.** The interim BSL column surfaced
+  organisms that are `is_candidate = True` but are risk-group 2+: most urgently **"Bacillus anthracis"
+  (strain_group 381, BSL-3)**, almost certainly a GTDB miscall or contaminant, please verify; plus RG2
+  *Bordetella pertussis*, *Streptococcus agalactiae*, *Moraxella catarrhalis*, *Enterococcus faecalis*,
+  *Klebsiella grimontii*, *Enterobacter hormaechei*, *Serratia liquefaciens*, *Acinetobacter ursingii/bereziniae*
+  (full list + basis: `docs/decisions/bsl_stat_sheet_decisions.md`). **Candidacy was intentionally NOT changed;
+  this is the team's call.**
 - **The Relevance columns are on the card but NOT yet in the ranking.** Whether (and how) to rank on airway
   abundance, PA co-occurrence, or the predicted competitor is the team's call, and it is a one-line change.
 - **Tissue is supplementary and not in any gate or ranking.** It is Gwyn's own computed data for the studies she
