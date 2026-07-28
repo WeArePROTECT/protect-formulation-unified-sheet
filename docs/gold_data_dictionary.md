@@ -63,10 +63,23 @@ Values are percent knock-down of *P. aeruginosa* (0 = PA grew freely, 100 = full
 | `comp_synergy_pa` | Does teaming help | `comp_best_team_pa` minus `comp_best_solo_pa` (signed) | positive = partners boost it; 0 or negative = as good or better alone |
 | `comp_n_formulations` | How many PA-tested formulations included this strain | Count of distinct formulations containing it | integer (higher = more thoroughly screened in combos) |
 
+## Tissue (does the formulation work on airway tissue, and is it safe to the tissue)
+**Source:** Gwyneth Hutchinson's OWN computed tissue analyses (her co-culture statistics workbooks + M21 LY
+workbook), hand-extracted with full provenance · `data_sources.yaml` key `tissue` · every-number audit trail:
+`docs/tissue_provenance_and_method.md` · decisions: `docs/decisions/tissue_stat_sheet_decisions.md`.
+Formulations (teams of commensals) tested on human bronchial epithelium (WT = 16HBE, CF = CFBE) against
+*P. aeruginosa*.
+**PRELIMINARY and SUPPLEMENTARY.** Covers 7 strains from the studies Gwyneth has computed so far (she is
+mid-analysis; gaps: `docs/tissue_gaps_for_gwyn.md`); not yet confirmed by her; **NOT used in any gate or ranking.**
+
+| Column | What it means | How it is derived | Values |
+|---|---|---|---|
+| `tissue` | Best % suppression of PA on airway TISSUE by any formulation containing this strain (efficacy) | From Gwyneth's computed mCherry PA-burden analyses; % suppression vs the pathogen-alone control; best (max) across the strain's formulations | percent (higher = more PA knockdown). Blank = not tested / not yet computed |
+| `tissue_damage` | The strain's own effect on the epithelial barrier (a tissue-safety signal) | Gwyneth's Lucifer-Yellow % passage, control-subtracted vs SCFM, from the strain's MONOCULTURE (no PA, so it reflects the strain's own effect); worst (max) across tissues | percentage-passage points. **Positive = leakier = harm; negative = tighter = protective.** Blank = no barrier data |
+
 ## Reserved (columns waiting on data)
 | Column | What it will hold | Status |
 |---|---|---|
-| `tissue` | Tissue-model result (PA reduction on airway tissue) | Gwyn, not on the server yet |
 | `mouse` | Mouse-model result | Fatemeh, not on the server yet |
 
 ## Relevance (how common / PA-displacing the strain is in real patient airways — Emma's metagenomics)

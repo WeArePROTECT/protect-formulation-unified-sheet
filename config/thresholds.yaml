@@ -43,6 +43,16 @@ competition:
   # The reporting line used in summaries ("clears >= X% PA").
   report_bar_pct: 50
 
+tissue:
+  # Gwyneth's airway-tissue model, built from HER computed analyses. PRELIMINARY (she is mid-analysis) and a
+  # SUPPLEMENTARY, non-gating confirmation layer on the sheet. How a strain's tissue rows collapse to one number:
+  #   pa_reduction = max  -> the strain's BEST demonstrated PA suppression on tissue as a formulation member
+  #                          (efficacy; parallels competition's best-as-member)
+  #   barrier      = max  -> the strain's WORST monoculture barrier change (safety; higher % passage = leakier
+  #                          = more tissue damage; negative = the strain tightened / protected the barrier)
+  pa_reduction_aggregation: max
+  barrier_aggregation: max
+
 gold:
   # How a strain's several isolates combine into one strain-level value:
   #   safety      = worst_case  (flag the strain if ANY isolate looks unsafe)

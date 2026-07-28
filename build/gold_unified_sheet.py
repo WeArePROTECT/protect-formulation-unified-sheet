@@ -37,7 +37,7 @@ GOLD_COLS = [
     "hemolysis_beta", "hemolysis_concern", "amr_resistance_count_prov", "amr_gene_count",
     "grows_scfm", "scfm_od", "mucin_lift",
     "comp_best_solo_pa", "comp_best_team_pa", "comp_best_partner", "comp_synergy_pa", "comp_n_formulations",
-    "tissue", "mouse",
+    "tissue", "tissue_damage", "mouse",
     "abundance_metag", "prevalence_metag", "abundance_metars", "prevalence_metars",
     "pa_cooccurrence", "pa_cooccurrence_p", "pa_metabolic_competitor",
     "decision", "decision_reason",
@@ -90,6 +90,8 @@ def main():
     amrg = load_keyed(os.path.join(SILVER, "silver_amr_genomic.csv")) if is_enabled("amr_genomic") else {}
     comp = load_keyed(os.path.join(SILVER, "silver_competition.csv")) if is_enabled("competition") else {}
     grow = load_keyed(os.path.join(SILVER, "silver_growth_endpoint.csv")) if is_enabled("growth_endpoint") else {}
+    tiss_path = os.path.join(SILVER, "silver_tissue.csv")   # TISSUE (Gwyn, preliminary) — file-exists guard: blank if not built
+    tiss = load_keyed(tiss_path) if (is_enabled("tissue") and os.path.exists(tiss_path)) else {}
     # RELEVANCE (Emma): asma -> cluster_95 backbone, and cluster_95 -> airway abundance metrics.
     emma_map_path = os.path.join(SILVER, "silver_emma_map.csv")
     abund_path = os.path.join(SILVER, "silver_airway_abundance.csv")
@@ -131,6 +133,14 @@ def main():
         best = max(comp_members, key=lambda r: (num(r["best_team_inhib_pa"]) or -1e9,
                                                  num(r["best_solo_inhib_pa"]) or -1e9)) if comp_members else None
 
+        # TISSUE (Gwyn, PRELIMINARY) — best PA reduction as a member (efficacy) + worst barrier change (safety),
+        # each copied wholesale from the group isolate that recorded it (keeps the value traceable to source).
+        tiss_members = [tiss[a] for a in members if a in tiss]
+        t_pa = max((r for r in tiss_members if num(r["tissue_pa_reduction"]) is not None),
+                   key=lambda r: num(r["tissue_pa_reduction"]), default=None)
+        t_dmg = max((r for r in tiss_members if num(r["tissue_barrier_delta"]) is not None),
+                    key=lambda r: num(r["tissue_barrier_delta"]), default=None)
+
         # RELEVANCE — the strain's Emma cluster (dominant across its isolates), then that cluster's abundance
         clus = [asma_cluster[a] for a in members if a in asma_cluster]
         cl = Counter(clus).most_common(1)[0][0] if clus else None
@@ -152,7 +162,9 @@ def main():
             "comp_best_partner": best["best_partner"] if best else None,
             "comp_synergy_pa": best["suppressive_synergy_pa"] if best else None,
             "comp_n_formulations": best["n_formulations_pa"] if best else None,
-            "tissue": None, "mouse": None,
+            "tissue": t_pa["tissue_pa_reduction"] if t_pa else None,
+            "tissue_damage": t_dmg["tissue_barrier_delta"] if t_dmg else None,
+            "mouse": None,
             "abundance_metag": ab["abundance_metag"] if ab else None,
             "prevalence_metag": ab["prevalence_metag"] if ab else None,
             "abundance_metars": ab["abundance_metars"] if ab else None,
@@ -175,6 +187,7 @@ def main():
     print(f"    candidates flagged for safety review : {sum(1 for r in cand if r['candidate_review']=='review')} genus-watchlist + {unreviewed} unreviewed")
     print(f"    candidates that grow in SCFM         : {sum(1 for r in cand if r['grows_scfm']=='Y')}")
     print(f"    candidates with competition data     : {sum(1 for r in cand if r['comp_best_team_pa'] not in (None,''))}")
+    print(f"    candidates with tissue data (prelim) : {sum(1 for r in cand if r['tissue'] not in (None,''))}")
     print(f"    -> ../data/gold/gold_unified_sheet.{{csv,parquet,xlsx}}")
 
 
@@ -218,13 +231,16 @@ def _about_lines():
         f"    - Competition replicate value : {c['competition']['replicate_aggregation']} (of repeat wells)",
         f"    - Competition report bar      : >= {c['competition']['report_bar_pct']}% knock-down of PA",
         f"    - Strain rollup              : safety = {c['gold']['safety_aggregation']}, competition = {c['gold']['competition_aggregation']}",
+        f"    - Tissue rollup (PRELIM)     : PA reduction = {c.get('tissue',{}).get('pa_reduction_aggregation','max')} as a member; damage = worst barrier change (commensal-only)",
         "",
         "Safety / candidacy: 'is_candidate = True' means 'NOT a known pathogen' — it is NOT a safety clearance.",
         "The candidate list comes from data/reference/species_safety.csv, which is a TEAM-OWNED interim list",
         "meant to be replaced by Gwyn's BSL-1 list. 'candidate_review = review/unreviewed' flags strains a",
         "biologist should still vet.",
         "",
-        "Blank cells mean 'not screened yet', not 'no result'. Tissue / mouse / ubiquity columns fill in later.",
+        "Blank cells mean 'not screened yet', not 'no result'. Mouse / ubiquity columns fill in later; the tissue",
+        "columns are now partially filled from Gwyn's PRELIMINARY (needs-review) tissue model and will change as",
+        "she confirms them.",
         "Questions or changes: Spencer.",
     ]
 

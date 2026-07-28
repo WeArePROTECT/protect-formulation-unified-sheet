@@ -109,6 +109,21 @@ sources:
     consumed_by: silver_competition
     provides: [comp_best_solo_pa, comp_best_team_pa, comp_best_partner, comp_synergy_pa, comp_n_formulations]
 
+  # ---- TISSUE (Gwyneth's airway-tissue model; PRELIMINARY, supplementary, NON-gating) ----
+  tissue:
+    enabled: true
+    owner: "Gwyneth Hutchinson"
+    # Built from Gwyneth's OWN computed analyses (her co-culture statistics workbooks + M21 LY workbooks),
+    # hand-extracted with full row-level provenance into two curated tables (efficacy + barrier). Her data is
+    # private (ACL: Spencer + Gwyn), so only they can build this source; anyone else can run the rest of the
+    # pipeline with `enabled: false` here (the tissue columns come out blank). NOTE: partial coverage — she is
+    # mid-analysis. Provenance, method, coverage, and known gaps: docs/tissue_provenance_and_method.md
+    path: "/usr2/people/protect/Arkin_Lab/gahr/CURATED/tissue_results/"
+    files: [tissue_efficacy_v1.csv, tissue_barrier_v1.csv]
+    version: "v1.1 2026-07-21 (Gwyneth's computed analyses; PRELIMINARY; partial coverage; added ptc.739/740 M21 LY barrier, see gaps doc)"
+    consumed_by: silver_tissue
+    provides: [tissue, tissue_damage]
+
   # ---- RELEVANCE (Emma metagenomics; canonical set = final_dataset_clean, built 2026-06-18) ----
   # Verified current 2026-07-18: final_dataset_clean supersedes the older analysis_cluster* variants;
   # the sibling PRO_metaRS_actuallast/ holds only raw fastq re-sequencing inputs, not processed tables.

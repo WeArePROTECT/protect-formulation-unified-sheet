@@ -40,6 +40,20 @@ Last updated: 2026-07-15. Preliminary flags reflect owner notes at that date —
 |---|---|---|---|
 | `/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260714.xlsx` → sheet `Competition` (**Standard conditions only**) | SYK | Inhibition of PA reporter by 1–5-member SynComs (~27,667 rows) | `silver_competition` + `formulations` |
 
+## TISSUE gate  *(2026-07-21 — Gwyneth's airway-tissue model; PRELIMINARY, supplementary, NON-gating)*
+
+Built from **Gwyneth's OWN computed analysis workbooks** (her co-culture statistics files + M21 LY workbook),
+hand-extracted with row-level provenance into two curated tables. Her data is **private** (ACL: Spencer + Gwyn).
+Full audit trail (every number → her file/sheet): `docs/tissue_provenance_and_method.md`; coverage gaps:
+`docs/tissue_gaps_for_gwyn.md`; ADR: `docs/decisions/tissue_stat_sheet_decisions.md`.
+**To add a study:** append rows to the two CSVs (same columns + provenance), bump `version` in
+`config/data_sources.yaml`, re-run. Source workbooks live under `gahr/data_grab_7_21_26*/`.
+
+| Source (exact address) | Owner | What it holds | Feeds |
+|---|---|---|---|
+| `gahr/CURATED/tissue_results/tissue_efficacy_v1.csv` | Gwyneth Hutchinson | per (study × tissue × formulation) % PA suppression on tissue, from her computed mCherry analyses (6 rows, 3 studies) | `silver_tissue` → `tissue` |
+| `gahr/CURATED/tissue_results/tissue_barrier_v1.csv` | Gwyneth Hutchinson | per (study × tissue × strain) control-subtracted Lucifer-Yellow barrier change, monoculture (9 rows, 3 studies) | `silver_tissue` → `tissue_damage` |
+
 ## IDENTITY / TAXONOMY  *(← the unblock: Alex's manifest, confirmed 2026-07-15)*
 
 | Source | Owner | Holds | Feeds |
@@ -71,7 +85,8 @@ joins to our strains via **cluster_95 ids (which ARE our ASMA genomes); PA = clu
 | `Zengler_Lab/Emma/final_dataset_clean/MIND/data/MIND_PA_competitors_per_sample.tsv` | Emma | MIND metabolic-competitor prediction (focal PA=737) | `silver_pa_metabolic_competitor` -> `pa_metabolic_competitor` |
 
 ## NOT YET ON SERVER (can't be bronze until delivered)
-- **Tissue damage + tissue competition** — Gwyn (local). | **Mouse** — Fatemeh (local). | **BSL-1 list** — Gwyn.
+- **Mouse** — Fatemeh (local). | **BSL-1 list** — Gwyn (still local).
+- *(Tissue landed 2026-07-21 — see the TISSUE gate above. Still `needs_review`; more M21 studies pending from Gwyn.)*
 
 ---
 

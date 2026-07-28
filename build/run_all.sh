@@ -14,6 +14,7 @@ echo "== 2. silver stat sheets =="
 "$PY" silver_amr_measured.py
 "$PY" silver_amr_genomic.py
 "$PY" silver_competition.py           # COMPETITION — also writes the formulations table
+"$PY" silver_tissue.py                # TISSUE — Gwyn's airway-tissue PA reduction + barrier damage (PRELIMINARY)
 "$PY" silver_growth_endpoint.py       # VIABILITY — SCFM grow/no-grow + mucin lift
 # "$PY" silver_growth_curves.py       # VIABILITY — growth rate/lag (todo)
 "$PY" silver_emma_map.py              # RELEVANCE — Emma cluster_95 <-> ASMA/species backbone
