@@ -22,6 +22,20 @@ COLS = ["asma_id", "amr_gene_count", "amr_class_count", "amr_classes",
         "total_elements", "assay", "tool", "source_file"]
 
 
+def is_no_hit_placeholder(row):
+    """True for a 'screened, zero hits found' row — not an element that was found.
+
+    Alex records an isolate that ran through the tool and came back empty as one row
+    whose every field except `ASMA_id` is the literal string 'NA'. It is a coverage
+    marker, not a hit, so it must not count toward `total_elements` (which otherwise
+    reads 1 for an isolate that has nothing). The isolate still gets an output row —
+    screened-and-clean is a real, different answer from never-screened (absent).
+    (Same convention in the sibling metaVF.tsv, if we ever add the virulence add-on.)
+    """
+    values = [v for k, v in row.items() if k != "ASMA_id"]
+    return bool(values) and all(str(v).strip() == "NA" for v in values)
+
+
 def main():
     if not is_enabled(SOURCE):
         print(f"silver_amr_genomic -> source '{SOURCE}' disabled in data_sources.yaml; skipping")
@@ -32,7 +46,9 @@ def main():
         aid = normalize_asma_id(row.get("ASMA_id"))
         if not aid:
             continue
-        a = agg[aid]
+        a = agg[aid]                      # touch: keeps screened-but-empty isolates in the output
+        if is_no_hit_placeholder(row):
+            continue                      # screened, nothing found -> contributes no elements
         a["total"] += 1
         if str(row.get("Type", "")).strip().upper() == "AMR":
             a["amr"] += 1
