@@ -65,19 +65,41 @@ sources:
   # ---- SAFETY ----
   hemolysis:
     enabled: true
-    owner: "Cassandra Reyes (via Jake Hilzinger)"
-    path: "/usr2/people/protect/Arkin_Lab/hilzinger/hemolysis/ASMArep_HemolysisResultsSummary_063026_ASMAid.xlsx"
+    owner: "Cassandra Reyes (departed 2026-08-13; route questions to Jake Hilzinger / SYK)"
+    # Strict superset of the old 063026 file: the base sheet is byte-identical (verified cell by
+    # cell) and a second-round re-screen sheet is added. Received direct from Cassie 2026-08-12.
+    # INTERIM PATH: the canonical home is hilzinger/hemolysis/, which is not group-writable, so
+    # Jake must place a copy there. Flip this path when he does.
+    # Provenance: current_tasks_8_2026/cassie_hemolysis_data_inventory/data/hemolysis/PROVENANCE.md
+    path: "/usr2/people/protect/Arkin_Lab/sjlong/current_tasks_8_2026/cassie_hemolysis_data_inventory/data/hemolysis/ASMArep_HemolysisResultsSummary_FollowUps_08122026.xlsx"
     sheet: "ASMArep_HemolysisResultsSummary"
-    version: "063026"
+    version: "08122026"
+    supersedes: "/usr2/people/protect/Arkin_Lab/hilzinger/hemolysis/ASMArep_HemolysisResultsSummary_063026_ASMAid.xlsx"
+    # Clean re-reads for isolates whose original result was unreliable (no growth, or overlapping
+    # colonies). Set to null to ignore the re-screen entirely and reproduce the 063026 behaviour.
+    followup_sheet: "Follow Up Results"
+    # How a re-screen combines with the original when they disagree. Affects exactly 10 isolates,
+    # all base=Y vs followup=N. Rationale and the full list:
+    # cassie_hemolysis_data_inventory/docs/merge_policy_decision.md
+    #   union         -> beta-positive if beta in EITHER sheet (conservative)
+    #   followup_wins -> the re-screen supersedes the original for any isolate it covers
+    #
+    # SET TO followup_wins 2026-08-13 on Cassie Reyes's explicit instruction, verbatim:
+    #   "I would trust the rescreen call over the original call. If it was followed up on in the
+    #    rescreen, it is because I didn't trust the original call for some reason (hemolysis
+    #    overlap, contamination, etc)."
+    # This is the assay owner's call, not an engineering default. Do not revert without her
+    # successor's agreement.
+    followup_policy: followup_wins
     consumed_by: silver_hemolysis
     provides: [hemolysis_beta, hemolysis_concern]
 
   amr_measured:
     enabled: true
     owner: "Sun-Young Kim (SYK)"
-    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260714.xlsx"   # shared SYK workbook (3 sheets)
+    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260828.xlsx"   # shared SYK workbook (10 sheets)
     sheet: "Antibiotic_resistance_v2"
-    version: "20260714"
+    version: "20260828"
     consumed_by: silver_amr_measured
     provides: [amr_resistance_count_prov]
 
@@ -93,9 +115,9 @@ sources:
   growth_endpoint:
     enabled: true
     owner: "Sun-Young Kim (SYK)"
-    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260714.xlsx"   # shared SYK workbook (3 sheets)
+    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260828.xlsx"   # shared SYK workbook (10 sheets)
     sheet: "Growth_endpoint"
-    version: "20260714"
+    version: "20260828"
     consumed_by: silver_growth_endpoint
     provides: [grows_scfm, scfm_od, mucin_lift]
 
@@ -103,9 +125,9 @@ sources:
   competition:
     enabled: true
     owner: "Sun-Young Kim (SYK)"
-    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260714.xlsx"   # shared SYK workbook (3 sheets)
+    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260828.xlsx"   # shared SYK workbook (10 sheets)
     sheet: "Competition"
-    version: "20260714"
+    version: "20260828"
     consumed_by: silver_competition
     provides: [comp_best_solo_pa, comp_best_team_pa, comp_best_partner, comp_synergy_pa, comp_n_formulations]
 
@@ -124,9 +146,16 @@ sources:
     consumed_by: silver_tissue
     provides: [tissue, tissue_damage]
 
-  # ---- RELEVANCE (Emma metagenomics; canonical set = final_dataset_clean, built 2026-06-18) ----
-  # Verified current 2026-07-18: final_dataset_clean supersedes the older analysis_cluster* variants;
-  # the sibling PRO_metaRS_actuallast/ holds only raw fastq re-sequencing inputs, not processed tables.
+  # ---- RELEVANCE (Emma metagenomics; canonical set = 20260728_final_dataset_clean) ----
+  # UPDATED 2026-09-02. Emma's own README_RERUN.md: 20260728_final_dataset_clean/ was created
+  # 2026-07-28 as a full mirror of final_dataset_clean/ and then re-run end to end on the updated
+  # cohort (161 raw / 152 paired / 47 patients; previously 159 / 149 / 45).
+  # Do NOT use final_dataset_clean/: it is mixed-vintage, holding a 152-sample count table next to
+  # 149-sample SparCC and MIND outputs that were never refreshed.
+  # custom_database/ is a SIBLING of both dated dirs, not inside either, so emma_cluster_map below
+  # is unaffected and is deliberately left pointing where it is.
+  # 20260728_final_dataset_clean/ is a LIVE working directory (files modified 2026-09-01). Ask Emma
+  # for a stable point before treating any of this as a frozen snapshot.
   emma_cluster_map:
     enabled: true
     owner: "Emma Roholfada (Zengler lab)"
@@ -139,25 +168,42 @@ sources:
   airway_abundance:
     enabled: true
     owner: "Emma Roholfada (Zengler lab)"
-    path: "/usr2/people/protect/Zengler_Lab/Emma/final_dataset_clean/multiomics_paired_depthfiltered_raw.tsv"
-    version: "final_dataset_clean 2026-06-18 (149 metaG + 149 metaRS)"
+    # REPOINTED 2026-09-02 to Emma's full re-run directory. This particular file is byte-identical
+    # to the copy in final_dataset_clean/ (same md5, same mtime), so no value changes from this
+    # line alone; it moves for consistency, so every Emma source cites one directory.
+    path: "/usr2/people/protect/Zengler_Lab/Emma/20260728_final_dataset_clean/multiomics_paired_depthfiltered_raw.tsv"
+    version: "20260728_final_dataset_clean (152 metaG + 152 metaRS paired; file mtime 2026-07-27)"
     consumed_by: silver_airway_abundance
     provides: [abundance_metag, prevalence_metag, abundance_metars, prevalence_metars]
 
   pa_cooccurrence:
     enabled: true
     owner: "Emma Roholfada (Zengler lab)"
-    path: "/usr2/people/protect/Zengler_Lab/Emma/final_dataset_clean/sparcc_PApos/out_metaG/"
+    # REPOINTED 2026-09-02. The copy in final_dataset_clean/ is SparCC output computed 2026-06-22 on
+    # the 149-sample cohort, sitting next to a count table that was replaced in place on 2026-07-27
+    # with the 152-sample version. That directory is mixed-vintage. These files were recomputed
+    # 2026-07-28 on the current cohort. NOTE pvalues.tsv is the SAME SIZE in both directories
+    # (692,558 bytes) but different content, so compare by checksum, never by size.
+    path: "/usr2/people/protect/Zengler_Lab/Emma/20260728_final_dataset_clean/sparcc_PApos/out_metaG/"
     files: [median_correlation.tsv, pvalues.tsv]
-    version: "final_dataset_clean 2026-06-18 (SparCC, PA-positive samples, PA = cluster 737)"
+    version: "20260728_final_dataset_clean (SparCC recomputed 2026-07-28, PA-positive samples, PA = cluster 737)"
     consumed_by: silver_pa_cooccurrence
     provides: [pa_cooccurrence, pa_cooccurrence_p]
 
   pa_metabolic_competitor:
     enabled: true
     owner: "Emma Roholfada (Zengler lab)"
-    path: "/usr2/people/protect/Zengler_Lab/Emma/final_dataset_clean/MIND/data/"
+    # REPOINTED 2026-09-02 to MIND_152/, NOT MIND/.
+    # TRAP: 20260728_final_dataset_clean/ contains BOTH. MIND/ was copied across unchanged and still
+    # holds the 149-sample results (competitors 860 rows); MIND_152/ is the 2026-08-05 re-run on the
+    # current cohort (competitors 895 rows, abundance 152 rows). Switching directory while keeping
+    # the old relative path silently keeps the old numbers under a new directory name, and every
+    # row-count check still passes because it checks the wrong file consistently.
+    # MIND_152/ holds 10 files; MIND/ holds 21. The 11 extra are NOT in MIND_152 and were not
+    # regenerated. Both files this source reads ARE in MIND_152 and both differ from their MIND
+    # counterparts, verified by md5 2026-09-02.
+    path: "/usr2/people/protect/Zengler_Lab/Emma/20260728_final_dataset_clean/MIND_152/data/"
     files: [MIND_PA_competitors_per_sample.tsv, MIND_PA_abundance_metaG.tsv]
-    version: "final_dataset_clean 2026-06-18 (MIND metabolic model)"
+    version: "20260728_final_dataset_clean/MIND_152 (MIND re-run 2026-08-05 on the 152-sample cohort)"
     consumed_by: silver_pa_metabolic_competitor
     provides: [pa_metabolic_competitor]
