@@ -12,6 +12,7 @@ test_m24_sources.py -- the three rules that arrived with Sun-Young Kim's Month 2
    10x-glucose wells alone and group 770 mixed two media in one score (measured 2026-10-01).
 3. PA REPORTERS. The set of reporters that are P. aeruginosa comes from config, and includes the
    14 clinical reporters added for Month 24. Before 2026-10-01 it was five names in code.
+4. ASSAY LOOKUP. data/gold/assay_asma_id_lookup.csv is rebuilt every run and agrees with the card.
 
 The config tests need nothing built; the output tests read data/ and skip if it is not built.
 """
@@ -82,6 +83,16 @@ class TestM24Outputs(unittest.TestCase):
         self.assertEqual(r["status"], "shortlist_unscreened")
         self.assertEqual(r["gate_non_hemolytic"], "untested")
         self.assertEqual(r["gate_amr_not_mdr"], "untested")
+
+    def test_assay_lookup_is_rebuilt_and_matches_the_card(self):
+        # Until 2026-10-01 the lookup was a one-off from 2026-07-27 that no build refreshed; the
+        # card dropped ASMA-4467 as group 259's assay isolate while the lookup still named it.
+        lookup = {r["strain_group"]: r for r in _rows(os.path.join(GOLD, "assay_asma_id_lookup.csv"))}
+        card = {r["strain_group"]: r for r in _rows(os.path.join(GOLD, "gold_unified_sheet.csv"))}
+        self.assertNotIn("259", lookup)
+        self.assertEqual(set(lookup), {g for g, r in card.items() if r["assay_asma_id"]})
+        wrong = [g for g in lookup if lookup[g]["assay_asma_id"] != card[g]["assay_asma_id"]]
+        self.assertEqual(wrong, [])
 
     def test_no_headline_score_from_10x_glucose_wells(self):
         # ASMA-1228's only standard wells against the headline reporter are 10x-glucose wells.

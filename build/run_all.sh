@@ -24,6 +24,7 @@ echo "== 2. silver stat sheets =="
 
 echo "== 3. gold card =="
 "$PY" gold_unified_sheet.py           # strain-level decision card (.csv/.parquet/.xlsx)
+"$PY" assay_asma_id_lookup.py         # companion lookup (was a one-off until 2026-10-01; see its docstring)
 
 echo "== 4. formulation shortlist =="
 "$PY" heuristic_shortlist.py          # config-driven gates + ranking (config/formulation_criteria.yaml)
