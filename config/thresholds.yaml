@@ -42,6 +42,37 @@ competition:
   headline_reporter: PA14_KEH108_Reporter
   # The reporting line used in summaries ("clears >= X% PA").
   report_bar_pct: 50
+  # Which reporter strains ARE P. aeruginosa. A fact, not a threshold: every one is PA by its
+  # genome (the ASMA-<n>_Reporter strains are fluorescent versions of clinical PA isolates).
+  # Feeds best_inhib_pa_any only; the headline columns stay on headline_reporter. The 14
+  # ASMA-<n>_Reporter strains from ASMA-35 down were added for Month 24 (SYK, 2026-09-27 workbook).
+  pa_reporters:
+    - PA14_KEH108_Reporter
+    - PA14_FA_Reporter
+    - PAO1_Reporter
+    - ASMA-137_Reporter
+    - ASMA-143_Reporter
+    - ASMA-35_Reporter
+    - ASMA-130_Reporter
+    - ASMA-168_Reporter
+    - ASMA-274_Reporter
+    - ASMA-425_Reporter
+    - ASMA-1298_Reporter
+    - ASMA-1341_Reporter
+    - ASMA-1667_Reporter
+    - ASMA-2330_Reporter
+    - ASMA-2358_Reporter
+    - ASMA-2888_Reporter
+    - ASMA-3066_Reporter
+    - ASMA-4151_Reporter
+    - ASMA-4963_Reporter
+  # Wells grown in these media are NOT a standard condition and are left out of every score here,
+  # even when Assay_condition_type says Standard_A. Sun-Young Kim, 2026-09-28: "SCFM_10x glucose
+  # Standard_A should be treated differently from SCFM Standard_A." They stay, unfiltered, in the
+  # lakehouse table protect.formulation.competition_screen. A workbook without a Media column
+  # (anything before 2026-09-27) excludes nothing.
+  exclude_media:
+    - SCFM_10X_glucose
 
 tissue:
   # Gwyneth's airway-tissue model, built from HER computed analyses. PRELIMINARY (she is mid-analysis) and a

@@ -2,7 +2,10 @@
 """
 silver_competition.py — COMPETITION: how well a strain knocks down the pathogen.
 
-Source : SYK ASMA_phenotype_20260714.xlsx -> sheet Competition (STANDARD conditions only).
+Source : SYK ASMA_phenotype_<date>.xlsx (data_sources.yaml) -> sheet Competition (STANDARD conditions only).
+         From the 2026-09-27 workbook a well also has a Media; wells in a medium listed under
+         competition.exclude_media (SCFM_10X_glucose) are left out even when labelled Standard_A,
+         because Sun-Young Kim says that medium is a different condition (2026-09-28).
 Meaning: each well = one formulation (team of 1-5 strains) vs one pathogen reporter, scored by
          Inhibition_percent (0 = pathogen grew freely, 100 = fully blocked).
 Design decisions + rationale: docs/decisions/competition_stat_sheet_decisions.md  <-- read this.
@@ -29,8 +32,11 @@ MEM_COLS = ["ASMA_A_id", "ASMA_B_id", "ASMA_C_id", "ASMA_D_id", "ASMA_E_id"]
 PA_PRIMARY = CFG["competition"]["headline_reporter"]   # headline PA reporter
 AGG = CFG["competition"]["replicate_aggregation"]      # median | mean | max
 REPORT_BAR = CFG["competition"]["report_bar_pct"]
-PA_ALL = {"PA14_KEH108_Reporter", "PA14_FA_Reporter", "PAO1_Reporter",
-          "ASMA-137_Reporter", "ASMA-143_Reporter"}    # all P. aeruginosa reporters (lab + clinical)
+# Every P. aeruginosa reporter (lab + clinical). A FACT kept in config, not a hand-typed set: until
+# 2026-10-01 it was five names here, and the 14 clinical reporters added for Month 24 were ignored.
+PA_ALL = set(CFG["competition"]["pa_reporters"])
+# Media that are not a standard condition (required key; an empty list is an explicit "none").
+EXCLUDE_MEDIA = set(CFG["competition"]["exclude_media"] or [])
 
 
 def collapse(vals):
@@ -64,8 +70,12 @@ def main():
 
     # collect replicate wells: (frozenset of members, reporter) -> [inhibition values]
     vals = defaultdict(list)
+    n_media_out = 0
     for row in read_xlsx_sheet(SRC, SHEET):
         if not is_standard(row.get("Assay_condition_type")):
+            continue
+        if str(row.get("Media") or "").strip() in EXCLUDE_MEDIA:
+            n_media_out += 1                 # a different condition, not a replicate of SCFM
             continue
         members = frozenset(m for m in (normalize_asma_id(row.get(c)) for c in MEM_COLS) if m)
         if not members:                      # reporter-only control well
@@ -129,6 +139,8 @@ def main():
     team_bar = sum(1 for r in strain_rows if (r["best_team_inhib_pa"] or 0) >= REPORT_BAR)
     pos_syn = sum(1 for r in strain_rows if (r["suppressive_synergy_pa"] or 0) > 0)
     print(f"formulations       -> {n_form} (team x reporter) rows  [agg={AGG}]")
+    print(f"    wells left out for medium {sorted(EXCLUDE_MEDIA)}: {n_media_out}  "
+          f"| PA reporters counted for best_inhib_pa_any: {len(PA_ALL)}")
     print(f"silver_competition -> {n_str} strains screened vs PA")
     print(f"    best SOLO knock-down of PA >={REPORT_BAR}% : {solo_bar} strains")
     print(f"    best TEAM knock-down of PA >={REPORT_BAR}% : {team_bar} strains")

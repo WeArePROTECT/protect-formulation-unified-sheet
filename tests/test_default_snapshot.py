@@ -99,13 +99,37 @@ DEFAULT_CRITERIA = [
 #
 #   Previous baseline (20260714 + final_dataset_clean, verified 2026-08-13):
 #       pass_gates 305 | ranked 85 | unscreened 220 | excluded 434 | fail_non_hemolytic 349
+#
+# REBASELINED AGAIN 2026-10-01 -- SYK workbook 20260828 -> 20260929 (his Month 24 update), plus
+# three rules that came with it (tests/test_m24_sources.py pins each one). PROTECT-29, PROTECT-34.
+#   SYK   : ASMA_phenotype_20260828.xlsx -> ASMA_phenotype_20260929.xlsx (he asked for 0929 or
+#           later). Competition 28,928 -> 30,536 rows; ASMA-4467 removed at source.
+#   Rules : (1) ASMA-4467's 2 hemolysis rows dropped via the shared retractions.csv (wrong strain
+#           in FREP5 well B9); (2) SCFM_10X_glucose wells left out of every score
+#           (competition.exclude_media); (3) the PA reporter set read from config, 19 not 5.
+#   The switchboard itself is UNCHANGED. test_real_invariants.py passed throughout.
+#
+#   Verified by diffing the old card against the new one before replacing it:
+#       status moves: exactly ONE -- sg 259 (Streptococcus vaginalis, ASMA-4467)
+#                     excluded -> shortlist_unscreened, both gates FAIL/pass -> untested.
+#                     It has NO hemolysis result now, and `missing: pass` lets it through as
+#                     UNTESTED; read it as "safety unknown", not "safe", until SYK re-tests.
+#       gate value moves: only sg 259's two.
+#       value_beats_pa moves (no status change): sg 284 -0.2 -> 19.7, sg 647 -7.2 -> 38.1,
+#                     sg 580 0.2 -> 24.5, sg 482 -7.2 -> 26.3 (new team results with ASMA-3643);
+#                     sg 583 (ASMA-4486) 37.0 -> 22.0 after a new replicate run.
+#   Rule (2) is why ranked did NOT move: without it sg 11 (ASMA-1228) entered the ranked list at
+#   #97 on 10x-glucose wells alone, and sg 770 blended both media in one score.
+#
+#   Previous baseline (20260828, verified 2026-09-02):
+#       pass_gates 305 | ranked 96 | unscreened 209 | excluded 434 | fail_non_hemolytic 349
 EXPECTED = {
     "candidates": 739,
-    "pass_gates": 305,        # shortlist + shortlist_unscreened; UNCHANGED, no gate value moved
-    "ranked": 96,             # status == shortlist            (was 85; +11 newly screened vs PA)
-    "unscreened": 209,        # status == shortlist_unscreened (was 220; the same 11, moved out)
-    "excluded": 434,          # status == excluded             UNCHANGED
-    "fail_non_hemolytic": 349,  # UNCHANGED
+    "pass_gates": 306,        # shortlist + shortlist_unscreened (was 305; +1 = sg 259)
+    "ranked": 96,             # status == shortlist            UNCHANGED (see rule 2 above)
+    "unscreened": 210,        # status == shortlist_unscreened (was 209; +1 = sg 259, untested)
+    "excluded": 433,          # status == excluded             (was 434; -1 = sg 259)
+    "fail_non_hemolytic": 348,  # (was 349; sg 259's retracted beta-hemolysis call)
     "fail_amr_not_mdr": 215,    # UNCHANGED
 }
 

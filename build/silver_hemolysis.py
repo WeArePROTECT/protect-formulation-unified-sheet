@@ -19,8 +19,15 @@ docs/merge_policy_decision.md:
 
 Follow-up rows whose reason is `SYK-Skip` were deliberately never attempted and carry no readings
 at all. They are skipped on read so a blank can never be mistaken for a negative result.
+
+RETRACTIONS. `retractions` in data_sources.yaml names a CSV of rows to drop, each with its reason;
+the lakehouse phenotype export reads the same file. Each line must match exactly its expected
+number of rows or the build stops: a mismatch means the source changed under the retraction.
+2026-10-01: ASMA-4467 in FREP5 well B9, the wrong strain (PROTECT-34).
 """
+import csv
 import os
+from collections import Counter
 from lib_ids import normalize_asma_id, read_xlsx_sheet, write_table
 from data_sources import source, is_enabled
 
@@ -35,6 +42,7 @@ POLICY = str(_SRC.get("followup_policy") or "union").strip().lower()
 VALID_POLICIES = ("union", "followup_wins")
 BETA = ["24: Beta Hemolysis?", "48: Beta Hemolysis?", "72: Beta Hemolysis?"]
 ALPHA = ["24: Alpha Hemolysis?", "48: Alpha Hemolysis?", "72: Alpha Hemolysis?"]
+RETRACTIONS = _SRC.get("retractions")
 COLS = ["asma_id", "grew", "beta_hemolytic", "alpha_hemolytic", "hemolysis_concern",
         "n_reps", "n_followup_reps", "call_source", "assay", "method", "source_file"]
 
@@ -54,9 +62,28 @@ def combine(base, followup):
     return "Y" if "Y" in (base, followup) else "N"
 
 
-def accumulate(store, sheet, skip_syk_skip=False):
-    """Read one sheet into {asma_id: {grew, beta, alpha, n}}."""
+def load_retractions():
+    """{sheet: {(asma_id, plate, well): line}} for THIS workbook. Missing file = configuration
+    error, not "nothing to retract"."""
+    if not RETRACTIONS:
+        return {}
+    out = {}
+    with open(RETRACTIONS, newline="", encoding="utf-8") as fh:
+        for ln in csv.DictReader(fh):
+            if ln["source_file"] != os.path.basename(SRC):
+                continue
+            out.setdefault(ln["sheet"], {})[(ln["asma_id"], ln["plate"], ln["well"])] = ln
+    return out
+
+
+def accumulate(store, sheet, skip_syk_skip=False, retract=None, matched=None):
+    """Read one sheet into {asma_id: {grew, beta, alpha, n}}, dropping retracted rows."""
     for row in read_xlsx_sheet(SRC, sheet):
+        raw = str(row.get("ASMA_ID") or row.get("ASMA_id") or "").strip()
+        key = (raw, str(row.get("FS Plate") or "").strip(), str(row.get("FS Well") or "").strip())
+        if retract and key in retract:
+            matched[(sheet, key)] += 1
+            continue
         aid = normalize_asma_id(row.get("ASMA_ID") or row.get("ASMA_id"))
         if not aid:
             continue
@@ -80,9 +107,22 @@ def main():
 
     empty = {"grew": [], "beta": [], "alpha": [], "n": 0}
     base, follow = {}, {}
-    accumulate(base, SHEET)
+    retractions = load_retractions()
+    unread = set(retractions) - {SHEET, FOLLOWUP_SHEET}
+    if unread:
+        raise ValueError(f"retractions name sheet(s) this build does not read: {sorted(unread)}")
+    matched = Counter()
+    accumulate(base, SHEET, retract=retractions.get(SHEET), matched=matched)
     if FOLLOWUP_SHEET:
-        accumulate(follow, FOLLOWUP_SHEET, skip_syk_skip=True)
+        accumulate(follow, FOLLOWUP_SHEET, skip_syk_skip=True,
+                   retract=retractions.get(FOLLOWUP_SHEET), matched=matched)
+    for sheet, lines in retractions.items():
+        for key, ln in lines.items():
+            if matched[(sheet, key)] != int(ln["expected_rows"]):
+                raise ValueError(f"retraction {key} on {sheet!r} matched {matched[(sheet, key)]} rows, expected "
+                                 f"{ln['expected_rows']}; the source changed under it, stop and look")
+            print(f"silver_hemolysis -> RETRACTED {matched[(sheet, key)]} rows: {key[0]} {key[1]} {key[2]} "
+                  f"({ln['ticket']})")
 
     rows = []
     for aid in set(base) | set(follow):

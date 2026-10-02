@@ -91,15 +91,20 @@ sources:
     # This is the assay owner's call, not an engineering default. Do not revert without her
     # successor's agreement.
     followup_policy: followup_wins
+    # Rows deliberately dropped from this workbook, one line each with the reason. The SAME file
+    # drives the lakehouse phenotype export, so the card and protect.phenotype drop the same rows.
+    # 2026-10-01: ASMA-4467 in FREP5 well B9 (2 rows). The stock in that well was the wrong strain
+    # (Sun-Young Kim, 2026-09-25 and 2026-09-28; PROTECT-34). Set to null to load every row.
+    retractions: "/usr2/people/protect/Arkin_Lab/protect_data/protect_lakehouse_pipeline/datasets/phenotype/retractions.csv"
     consumed_by: silver_hemolysis
     provides: [hemolysis_beta, hemolysis_concern]
 
   amr_measured:
     enabled: true
     owner: "Sun-Young Kim (SYK)"
-    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260828.xlsx"   # shared SYK workbook (10 sheets)
+    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260929.xlsx"   # shared SYK workbook (12 sheets); SYK: use 0929 or later
     sheet: "Antibiotic_resistance_v2"
-    version: "20260828"
+    version: "20260929"
     consumed_by: silver_amr_measured
     provides: [amr_resistance_count_prov]
 
@@ -115,9 +120,9 @@ sources:
   growth_endpoint:
     enabled: true
     owner: "Sun-Young Kim (SYK)"
-    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260828.xlsx"   # shared SYK workbook (10 sheets)
+    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260929.xlsx"   # shared SYK workbook (12 sheets); SYK: use 0929 or later
     sheet: "Growth_endpoint"
-    version: "20260828"
+    version: "20260929"
     consumed_by: silver_growth_endpoint
     provides: [grows_scfm, scfm_od, mucin_lift]
 
@@ -125,9 +130,9 @@ sources:
   competition:
     enabled: true
     owner: "Sun-Young Kim (SYK)"
-    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260828.xlsx"   # shared SYK workbook (10 sheets)
+    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260929.xlsx"   # shared SYK workbook (12 sheets); SYK: use 0929 or later
     sheet: "Competition"
-    version: "20260828"
+    version: "20260929"
     consumed_by: silver_competition
     provides: [comp_best_solo_pa, comp_best_team_pa, comp_best_partner, comp_synergy_pa, comp_n_formulations]
 

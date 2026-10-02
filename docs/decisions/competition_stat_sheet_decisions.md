@@ -80,6 +80,30 @@ The `Competition` sheet has one row per lab **well**: a *formulation* (a team of
   fresh — because the Q7 code was built for dashboard *counts/distributions*, pointed at the old file, didn't
   filter conditions (D2), and didn't produce the per-strain rollup (D5). **Why:** reuse the logic, not the purpose.
 
+### D9: `SCFM_10X_glucose` wells are a different condition, left out of every score (2026-10-01)
+- **Context:** from the 2026-09-27 workbook each well carries a `Media`. 304 wells (ASMA-1228 and
+  ASMA-1478 alone, plus their reporter-only controls) are `SCFM_10X_glucose` while still labelled
+  `Standard_A`, so D2's filter alone would pool them with plain SCFM.
+- **Chosen:** wells whose medium is listed under `competition.exclude_media` in `config/thresholds.yaml`
+  (`[SCFM_10X_glucose]`) are skipped. A workbook with no `Media` column excludes nothing.
+- **Why:** Sun-Young Kim, 2026-09-28: "SCFM_10x glucose Standard_A should be treated differently from
+  SCFM Standard_A." Measured without the rule: ASMA-1228 (sg 11) entered the ranked shortlist at #97 on
+  10x-glucose wells alone, and sg 770 blended both media in one score. The wells stay, unfiltered, in
+  the lakehouse table `protect.formulation.competition_screen`.
+- **Revisit if:** the team wants 10x-glucose results on the card as their own columns.
+
+### D10: The set of P. aeruginosa reporters lives in config, not code (2026-10-01)
+- **Context:** D6's "other PA reporters" was a hand-typed set of five names. The Month 24 workbook added
+  14 fluorescent reporters built from clinical PA isolates (ASMA-35_Reporter and 13 more), which that
+  set silently ignored.
+- **Chosen:** `competition.pa_reporters` in `config/thresholds.yaml`, 19 names. It feeds only
+  `best_inhib_pa_any`; the headline columns stay on `headline_reporter` (D6, unchanged).
+- **Why:** which strains are PA is a fact, so it belongs beside the other settings where a new reporter
+  is a one-line edit, and `tests/test_m24_sources.py` pins it. Effect on 2026-10-01: `best_inhib_pa_any`
+  rose for 8 strains, the card's headline values did not move because of it.
+- **Revisit if:** the team wants a breadth measure across the PA panel (how many PA strains a formulation
+  inhibits); that is a team-owned threshold, not this list.
+
 ---
 
 ## Things intentionally NOT decided here (owned elsewhere / later)
@@ -90,3 +114,4 @@ The `Competition` sheet has one row per lab **well**: a *formulation* (a team of
 
 ## Change log
 - 2026-07-15 — initial version (D1–D8), created alongside `silver_competition.py`.
+- 2026-10-01: D9 (media) and D10 (PA reporters in config), with Sun-Young's Month 24 workbook (PROTECT-29). See also `docs/decisions/m24_sources_decisions.md`.
