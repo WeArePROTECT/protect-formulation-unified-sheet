@@ -24,7 +24,7 @@ Last updated: 2026-09-02. Preliminary flags reflect owner notes at that date —
 | ~~`/usr2/people/protect/Arkin_Lab/hilzinger/hemolysis/ASMArep_HemolysisResultsSummary_063026_ASMAid.xlsx`~~ | Cassandra Reyes (via Jake) | **SUPERSEDED 2026-08-12** by the row above, which contains this sheet byte-identically. Retained for audit. | — |
 | `/usr2/people/protect/Arkin_Lab/hilzinger/hemolysis/cassie rep plate_well_sorted.xlsx` | Cassandra Reyes | Rep-plate w/ curated Strain Group / Representative / Genus / Species (306 rows) | interim taxonomy (now superseded by Alex's gtdbtk/mash below) |
 | `/usr2/people/protect/Arkin_Lab/hilzinger/hemolysis/HemolysisScreenPlateManifests.xlsx` | Cassandra Reyes | Plate→well layout maps | provenance only |
-| `/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260929.xlsx` → sheet `Antibiotic_resistance_v2` | Sun-Young Kim (he/him) | Measured abx growth-under-drug for 6 antibiotics + ΔOD600 QC (2,346 rows, measured 2026-10-01) | `silver_amr_measured` |
+| `/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype/ASMA_phenotype_20260929.xlsx` → sheet `Antibiotic_resistance_v2` | Sun-Young Kim (he/him) | Measured abx growth-under-drug for 6 antibiotics + ΔOD600 QC (2,346 rows, measured 2026-10-01) | `silver_amr_measured` |
 | `/usr2/people/alex.styer/protect/ASMA/amrfinder.tsv` | Alex Styer | Predicted AMR genes, one row per gene per isolate (~34k rows) | `silver_amr_genomic` |
 | `/usr2/people/alex.styer/protect/ASMA/metaVF.tsv` | Alex Styer | Predicted virulence factors (sibling of AMR; optional safety input) | `silver_amr_genomic` (virulence add-on) |
 
@@ -32,14 +32,14 @@ Last updated: 2026-09-02. Preliminary flags reflect owner notes at that date —
 
 | Source | Owner | Holds | Feeds |
 |---|---|---|---|
-| `/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260929.xlsx` → sheet `Growth_endpoint` | SYK | SCFM_72 / SCFM_mucin_0.5_72 grow-no-grow + BHIS/No_Carbon controls (2,357 rows, measured 2026-10-01) | `silver_growth_endpoint` |
-| `/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260929.xlsx` → sheet `Growth_Curve_single_96` | SYK | 96-well single-carbon growth curves, cyc=10 min (5,082 rows, measured 2026-10-01) | `silver_growth_curves` |
+| `/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype/ASMA_phenotype_20260929.xlsx` → sheet `Growth_endpoint` | SYK | SCFM_72 / SCFM_mucin_0.5_72 grow-no-grow + BHIS/No_Carbon controls (2,357 rows, measured 2026-10-01) | `silver_growth_endpoint` |
+| `/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype/ASMA_phenotype_20260929.xlsx` → sheet `Growth_Curve_single_96` | SYK | 96-well single-carbon growth curves, cyc=10 min (5,082 rows, measured 2026-10-01) | `silver_growth_curves` |
 
 ## COMPETITION gate
 
 | Source | Owner | Holds | Feeds |
 |---|---|---|---|
-| `/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260929.xlsx` → sheet `Competition` (**Standard conditions only, `SCFM_10X_glucose` wells excluded**) | SYK | Inhibition of PA reporter by 1–5-member SynComs (30,536 rows, measured 2026-10-01) | `silver_competition` + `formulations` |
+| `/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype/ASMA_phenotype_20260929.xlsx` → sheet `Competition` (**Standard conditions only, `SCFM_10X_glucose` wells excluded**) | SYK | Inhibition of PA reporter by 1–5-member SynComs (30,536 rows, measured 2026-10-01) | `silver_competition` + `formulations` |
 
 ## TISSUE gate  *(2026-07-21 — Gwyneth's airway-tissue model; PRELIMINARY, supplementary, NON-gating)*
 
@@ -59,7 +59,7 @@ Full audit trail (every number → her file/sheet): `docs/tissue_provenance_and_
 
 | Source | Owner | Holds | Feeds |
 |---|---|---|---|
-| `/usr2/people/protect/Arkin_Lab/SYK/ASMA_list.xlsx` | SYK | Canonical isolate universe + stock location (3,972 rows) | `identity_spine` (rows) |
+| `/usr2/people/protect/Arkin_Lab/SYK/old/ASMA_list.xlsx` | SYK | Canonical isolate universe + stock location (3,972 rows) | `identity_spine` (rows) |
 | `/usr2/people/alex.styer/protect/ASMA/gtdbtk/gtdbtk-summary.tsv` | Alex Styer | GTDB taxonomy; `sample_id` = ASMA_id → `classification` lineage (~5,719 assembly rows; dedup per isolate) | `identity_spine` (species/genus) |
 | `/usr2/people/alex.styer/protect/ASMA/mash/clusters.csv` | Alex Styer | **Canonical strain groups**: genome(ASMA_id) → cluster + is_representative (4,371 rows) | `identity_spine` (strain grain + representative) |
 | `/usr2/people/alex.styer/protect/ASMA/gtdbtk/assembly-manifest.tsv` | Alex Styer | `genome_id` (`ASMA-###__assembler`) → `sample_id` (ASMA_id) | ID reconciliation reference |

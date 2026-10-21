@@ -39,7 +39,9 @@ sources:
     enabled: true
     required: true
     owner: "Sun-Young Kim (SYK)"
-    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_list.xlsx"
+    # MOVED 2026-10-15: Sun-Young put this file in SYK/old/ (byte-identical to the 2026-09 server backup).
+    # He is updating the stock list (Slack 2026-10-21); point this at his new list when it lands. PROTECT-56.
+    path: "/usr2/people/protect/Arkin_Lab/SYK/old/ASMA_list.xlsx"
     version: "SYK ASMA_list (stock universe)"
     consumed_by: identity_spine
     provides: []                       # stock location attributes only; no decision columns
@@ -102,7 +104,7 @@ sources:
   amr_measured:
     enabled: true
     owner: "Sun-Young Kim (SYK)"
-    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260929.xlsx"   # shared SYK workbook (12 sheets); SYK: use 0929 or later
+    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype/ASMA_phenotype_20260929.xlsx"   # shared SYK workbook (12 sheets); SYK: use 0929 or later
     sheet: "Antibiotic_resistance_v2"
     version: "20260929"
     consumed_by: silver_amr_measured
@@ -120,7 +122,7 @@ sources:
   growth_endpoint:
     enabled: true
     owner: "Sun-Young Kim (SYK)"
-    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260929.xlsx"   # shared SYK workbook (12 sheets); SYK: use 0929 or later
+    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype/ASMA_phenotype_20260929.xlsx"   # shared SYK workbook (12 sheets); SYK: use 0929 or later
     sheet: "Growth_endpoint"
     version: "20260929"
     consumed_by: silver_growth_endpoint
@@ -130,7 +132,7 @@ sources:
   competition:
     enabled: true
     owner: "Sun-Young Kim (SYK)"
-    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype_20260929.xlsx"   # shared SYK workbook (12 sheets); SYK: use 0929 or later
+    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype/ASMA_phenotype_20260929.xlsx"   # shared SYK workbook (12 sheets); SYK: use 0929 or later
     sheet: "Competition"
     version: "20260929"
     consumed_by: silver_competition
