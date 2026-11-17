@@ -95,11 +95,19 @@ class TestM24Outputs(unittest.TestCase):
         self.assertEqual(wrong, [])
 
     def test_no_headline_score_from_10x_glucose_wells(self):
-        # ASMA-1228's only standard wells against the headline reporter are 10x-glucose wells.
+        # ASMA-1228 was screened alone against the headline reporter in 6 SCFM_10X_glucose wells
+        # (2026-09-23) and, from the 20261113 workbook on, in 6 plain-SCFM wells (2026-11-10). Its
+        # headline score must rest on the plain-SCFM wells alone: 6 wells, not 12. Until 20261113 it
+        # had no plain wells, so no headline score at all, and this test asserted a blank (rewritten
+        # 2026-11-16, PROTECT-56). If Sun-Young adds ASMA-1228 wells, re-derive the 6.
+        head = CFG["competition"]["headline_reporter"]
+        form = [r for r in _rows(os.path.join(SILVER, "formulations.csv"))
+                if r["formulation_id"] == "ASMA-1228" and r["reporter"] == head]
+        self.assertEqual(len(form), 1, "ASMA-1228 alone vs the headline reporter: expected one formulation row")
+        self.assertEqual(form[0]["n_wells"], "6", "the 10x-glucose wells were pooled with the SCFM wells")
         r = self.comp.get("ASMA-1228")
-        if r is not None:
-            self.assertEqual(r["best_solo_inhib_pa"], "")
-            self.assertEqual(r["n_formulations_pa"], "0")
+        self.assertIsNotNone(r)
+        self.assertEqual(r["best_solo_inhib_pa"], form[0]["inhibition_median"])
 
 
 if __name__ == "__main__":

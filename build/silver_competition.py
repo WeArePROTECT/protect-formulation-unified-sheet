@@ -4,8 +4,9 @@ silver_competition.py — COMPETITION: how well a strain knocks down the pathoge
 
 Source : SYK ASMA_phenotype_<date>.xlsx (data_sources.yaml) -> sheet Competition (STANDARD conditions only).
          From the 2026-09-27 workbook a well also has a Media; wells in a medium listed under
-         competition.exclude_media (SCFM_10X_glucose) are left out even when labelled Standard_A,
-         because Sun-Young Kim says that medium is a different condition (2026-09-28).
+         competition.exclude_media (SCFM_10X_glucose; from 2026-11-16 also the four SCFM_5X_* media) are
+         left out even when labelled Standard_A, because Sun-Young Kim says a different medium is a
+         different condition (2026-09-28; "separate the inhibition data by media type", 2026-10-21).
 Meaning: each well = one formulation (team of 1-5 strains) vs one pathogen reporter, scored by
          Inhibition_percent (0 = pathogen grew freely, 100 = fully blocked).
 Design decisions + rationale: docs/decisions/competition_stat_sheet_decisions.md  <-- read this.

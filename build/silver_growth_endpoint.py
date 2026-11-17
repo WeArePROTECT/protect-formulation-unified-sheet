@@ -8,6 +8,9 @@ Meaning: endpoint OD600 (culture cloudiness) after 72 h in SCFM, SCFM+mucin, ric
          media baseline, which we subtract (Sun-Young's rule).
 Thresholds are TEAM-OWNED (config/thresholds.yaml). Decisions: docs/decisions/viability_stat_sheet_decisions.md
 Output : one row per ASMA_id. Raw ODs kept so any cutoff re-derives.
+Retract: rows listed for this sheet in the `retractions` CSV (data_sources.yaml) are dropped before
+         anything else, matched on asma_id, each line with an exact-count check (lib_retractions.py).
+         2026-11-16: ASMA-1448, a wrong stock (PROTECT-59).
 """
 import os
 from collections import defaultdict
@@ -15,6 +18,7 @@ from statistics import mean
 from lib_ids import normalize_asma_id, read_xlsx_sheet, write_table
 from config import CFG
 from data_sources import source, is_enabled
+import lib_retractions
 
 SOURCE = "growth_endpoint"
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -22,6 +26,7 @@ OUT = os.path.join(os.path.dirname(HERE), "data", "silver", "silver_growth_endpo
 _SRC = source(SOURCE)
 SRC = _SRC["path"]
 SHEET = _SRC.get("sheet")
+RETRACTIONS = _SRC.get("retractions")
 SCFM_MIN = CFG["viability"]["scfm_grow_min_od"]        # team-owned
 QC_MIN = CFG["viability"]["qc_rich_media_min_od"]      # team-owned
 CONDS = ["No_Carbon_72", "SCFM_72", "SCFM_mucin_0.5_72", "BHIS_72"]
@@ -41,7 +46,9 @@ def main():
         print(f"silver_growth_endpoint -> source '{SOURCE}' disabled in data_sources.yaml; skipping")
         return
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
-    rows = list(read_xlsx_sheet(SRC, SHEET))
+    retract = lib_retractions.Tracker(lib_retractions.load(RETRACTIONS, SRC, SHEET), "silver_growth_endpoint")
+    rows = [r for r in read_xlsx_sheet(SRC, SHEET) if not retract.drop(r.get("ASMA_id"))]
+    retract.verify()
 
     # per-date BLANK baseline (mean of BLANK wells per condition); global fallback if a date has none
     blank_by_date, glob = defaultdict(lambda: defaultdict(list)), defaultdict(list)

@@ -40,7 +40,12 @@ sources:
     required: true
     owner: "Sun-Young Kim (SYK)"
     # MOVED 2026-10-15: Sun-Young put this file in SYK/old/ (byte-identical to the 2026-09 server backup).
-    # He is updating the stock list (Slack 2026-10-21); point this at his new list when it lands. PROTECT-56.
+    # His new master list (SYK/ASMA_stock_list/ASMA_original_20261113.xlsx, 5,061 isolates) has no
+    # growth-media column, which this sheet reads from here (decision D8, PROTECT-56). He answered
+    # 2026-11-16: he has the old growth-medium information, but BHIS is now the standard growth medium
+    # for every ASMA isolate. Spencer, 2026-11-16: move this sheet to the new list as a FOLLOW-UP after
+    # the PROTECT-56 load (no gate or ranking reads these columns; only identity_isolates and
+    # identity_strains change). The lakehouse's protect.reference.asma_stock_list loads the new list now.
     path: "/usr2/people/protect/Arkin_Lab/SYK/old/ASMA_list.xlsx"
     version: "SYK ASMA_list (stock universe)"
     consumed_by: identity_spine
@@ -96,7 +101,10 @@ sources:
     # Rows deliberately dropped from this workbook, one line each with the reason. The SAME file
     # drives the lakehouse phenotype export, so the card and protect.phenotype drop the same rows.
     # 2026-10-01: ASMA-4467 in FREP5 well B9 (2 rows). The stock in that well was the wrong strain
-    # (Sun-Young Kim, 2026-09-25 and 2026-09-28; PROTECT-34). Set to null to load every row.
+    # (Sun-Young Kim, 2026-09-25 and 2026-09-28; PROTECT-34).
+    # 2026-11-16: ASMA-1448 in FREP6 well E10 (2 rows), a wrong stock (very likely S. salivarius; Sun-Young
+    # Kim, 2026-11-02; PROTECT-59). Set to null to load every row. The file's lines for Sun-Young's own
+    # workbook are read by amr_measured and growth_endpoint below, not here.
     retractions: "/usr2/people/protect/Arkin_Lab/protect_data/protect_lakehouse_pipeline/datasets/phenotype/retractions.csv"
     consumed_by: silver_hemolysis
     provides: [hemolysis_beta, hemolysis_concern]
@@ -104,17 +112,28 @@ sources:
   amr_measured:
     enabled: true
     owner: "Sun-Young Kim (SYK)"
-    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype/ASMA_phenotype_20260929.xlsx"   # shared SYK workbook (12 sheets); SYK: use 0929 or later
+    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype/ASMA_phenotype_20261113.xlsx"   # shared SYK workbook (15 sheets)
     sheet: "Antibiotic_resistance_v2"
-    version: "20260929"
+    version: "20261113"
+    # Rows dropped from this sheet, matched on asma_id alone (the sheet has no plate or well); the same
+    # file as hemolysis.retractions, so the card and protect.phenotype drop the same rows. 2026-11-16:
+    # ASMA-1448 (3 rows), a wrong stock his workbook still carries (Sun-Young Kim, 2026-11-02; PROTECT-59).
+    # Each line must match exactly its expected rows or the build stops.
+    retractions: "/usr2/people/protect/Arkin_Lab/protect_data/protect_lakehouse_pipeline/datasets/phenotype/retractions.csv"
     consumed_by: silver_amr_measured
     provides: [amr_resistance_count_prov]
 
   amr_genomic:
     enabled: true
     owner: "Alex Styer"
-    path: "/usr2/people/alex.styer/protect/ASMA/amrfinder.tsv"
-    version: "Alex ASMA amrfinder (AMRFinderPlus)"
+    # PINNED 2026-11-16 to the 2026-02-25 version, the one behind the live lakehouse
+    # (protect.genome_analysis.isolate_amr_genes and protect.curated.silver_amr_genomic). Alex re-ran
+    # AMRFinderPlus on 2026-11-10 and overwrote /usr2/people/alex.styer/protect/ASMA/amrfinder.tsv, adding
+    # four columns this sheet's no-hit detector does not yet handle. Spencer, 2026-11-16, for the PROTECT-56
+    # load: "Keep live version". The copy, its md5 and why: PROVENANCE.md beside it. PROTECT-61 re-points this
+    # at Alex's live file when it loads his rerun.
+    path: "/usr2/people/protect/Arkin_Lab/sjlong/current_tasks_11_2026/syk_phenotype_20261029/data/amrfinder_20260225/amrfinder.tsv"
+    version: "Alex ASMA amrfinder (AMRFinderPlus), 2026-02-25 version, pinned 2026-11-16"
     consumed_by: silver_amr_genomic
     provides: [amr_gene_count]
 
@@ -122,9 +141,11 @@ sources:
   growth_endpoint:
     enabled: true
     owner: "Sun-Young Kim (SYK)"
-    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype/ASMA_phenotype_20260929.xlsx"   # shared SYK workbook (12 sheets); SYK: use 0929 or later
+    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype/ASMA_phenotype_20261113.xlsx"   # shared SYK workbook (15 sheets)
     sheet: "Growth_endpoint"
-    version: "20260929"
+    version: "20261113"
+    # As amr_measured.retractions: 2026-11-16, ASMA-1448 (3 rows), matched on asma_id alone (PROTECT-59).
+    retractions: "/usr2/people/protect/Arkin_Lab/protect_data/protect_lakehouse_pipeline/datasets/phenotype/retractions.csv"
     consumed_by: silver_growth_endpoint
     provides: [grows_scfm, scfm_od, mucin_lift]
 
@@ -132,9 +153,9 @@ sources:
   competition:
     enabled: true
     owner: "Sun-Young Kim (SYK)"
-    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype/ASMA_phenotype_20260929.xlsx"   # shared SYK workbook (12 sheets); SYK: use 0929 or later
+    path: "/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype/ASMA_phenotype_20261113.xlsx"   # shared SYK workbook (15 sheets)
     sheet: "Competition"
-    version: "20260929"
+    version: "20261113"
     consumed_by: silver_competition
     provides: [comp_best_solo_pa, comp_best_team_pa, comp_best_partner, comp_synergy_pa, comp_n_formulations]
 

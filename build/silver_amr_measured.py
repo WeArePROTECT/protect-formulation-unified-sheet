@@ -10,6 +10,9 @@ QC     : SYK's rule — if the untreated control barely grew (Untreat ΔOD600 < 
 Output : one row per ASMA_id, drug %s averaged over QC-passing replicates, plus a PROVISIONAL
          resistance count. The 50% cutoff is a placeholder for the biologists to set — we store
          the raw %s so any cutoff can be re-derived later.
+Retract: rows listed for this sheet in the `retractions` CSV (data_sources.yaml) are dropped before
+         anything else, matched on asma_id, each line with an exact-count check (lib_retractions.py).
+         2026-11-16: ASMA-1448, a wrong stock (PROTECT-59).
 """
 import os
 from collections import defaultdict
@@ -17,6 +20,7 @@ from statistics import mean
 from lib_ids import normalize_asma_id, read_xlsx_sheet, write_table
 from config import CFG
 from data_sources import source, is_enabled
+import lib_retractions
 
 SOURCE = "amr_measured"
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -24,6 +28,7 @@ OUT = os.path.join(os.path.dirname(HERE), "data", "silver", "silver_amr_measured
 _SRC = source(SOURCE)
 SRC = _SRC["path"]
 SHEET = _SRC.get("sheet")
+RETRACTIONS = _SRC.get("retractions")
 DRUGS = ["Ampicillin", "Ciprofloxacin", "Chloramphenicol", "Tetracycline", "Gentamicin", "Erythromycin"]
 # Thresholds are TEAM-OWNED — see config/thresholds.yaml. Raw %s are kept so any cutoff re-derives.
 QC_MIN = CFG["safety"]["amr_measured"]["qc_min_delta_od"]
@@ -45,7 +50,10 @@ def main():
         return
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     agg = defaultdict(lambda: {**{d: [] for d in DRUGS}, "n": 0})
+    retract = lib_retractions.Tracker(lib_retractions.load(RETRACTIONS, SRC, SHEET), "silver_amr_measured")
     for row in read_xlsx_sheet(SRC, SHEET):
+        if retract.drop(row.get("ASMA_id")):
+            continue
         aid = normalize_asma_id(row.get("ASMA_id"))
         if not aid:
             continue
@@ -58,6 +66,7 @@ def main():
             val = num(row.get(f"{d}_profile"))
             if val is not None:
                 a[d].append(val)
+    retract.verify()
 
     rows = []
     for aid, a in agg.items():

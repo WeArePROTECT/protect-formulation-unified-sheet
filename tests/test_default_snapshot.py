@@ -123,14 +123,34 @@ DEFAULT_CRITERIA = [
 #
 #   Previous baseline (20260828, verified 2026-09-02):
 #       pass_gates 305 | ranked 96 | unscreened 209 | excluded 434 | fail_non_hemolytic 349
+#
+# REBASELINED 2026-11-16 -- SYK workbook 20260929 -> 20261113 (PROTECT-56), plus the ASMA-1448
+# retraction (PROTECT-59) and the four SCFM_5X_* media left out of the scores (Spencer's yes,
+# 2026-11-16). tests/test_20261113_sources.py pins each rule. Alex's amrfinder.tsv is pinned to its
+# 2026-02-25 version, so nothing derived from it moved. The switchboard itself is UNCHANGED.
+#   Verified by diffing the old card against the new one before replacing it (a full rebuild in a
+#   chmod-700 scratch copy, then the real rebuild, identical to it file for file):
+#       status moves: exactly THREE.
+#         sg 541 (Streptococcus infantis_H, ASMA-1448 retracted): excluded -> shortlist_unscreened,
+#                 both gates FAIL/pass -> untested. Its only lab data was the wrong stock's; read it as
+#                 "safety unknown", not "safe", as sg 259.
+#         sg 224 (Rothia dentocariosa) and sg 11 (Streptococcus sp001556435, ASMA-1228):
+#                 shortlist_unscreened -> shortlist at ranks #97 and #98, the bottom: their first
+#                 standard-SCFM competition wells (beats_pa -18.5 and -25.7) show NO knock-down of PA.
+#       fail_amr_not_mdr 215 -> 214: sg 541's retracted antibiotic results.
+#       The top 10 ranks are unchanged; 66 groups change rank. The SCFM_5X_* rule moves no status and
+#       no rank (only ASMA-4486's competition values; measured both ways 2026-11-16).
+#
+#   Previous baseline (20260929, verified 2026-10-01):
+#       pass_gates 306 | ranked 96 | unscreened 210 | excluded 433 | fail_non_hemolytic 348 | fail_amr 215
 EXPECTED = {
     "candidates": 739,
-    "pass_gates": 306,        # shortlist + shortlist_unscreened (was 305; +1 = sg 259)
-    "ranked": 96,             # status == shortlist            UNCHANGED (see rule 2 above)
-    "unscreened": 210,        # status == shortlist_unscreened (was 209; +1 = sg 259, untested)
-    "excluded": 433,          # status == excluded             (was 434; -1 = sg 259)
-    "fail_non_hemolytic": 348,  # (was 349; sg 259's retracted beta-hemolysis call)
-    "fail_amr_not_mdr": 215,    # UNCHANGED
+    "pass_gates": 307,        # shortlist + shortlist_unscreened (was 306; +1 = sg 541)
+    "ranked": 98,             # status == shortlist            (was 96; +2 = sg 224, sg 11)
+    "unscreened": 209,        # status == shortlist_unscreened (was 210; +1 sg 541, -2 sg 224 and sg 11)
+    "excluded": 432,          # status == excluded             (was 433; -1 = sg 541)
+    "fail_non_hemolytic": 348,  # UNCHANGED
+    "fail_amr_not_mdr": 214,    # (was 215; sg 541's retracted antibiotic results)
 }
 
 

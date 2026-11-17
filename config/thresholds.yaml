@@ -71,8 +71,17 @@ competition:
   # Standard_A should be treated differently from SCFM Standard_A." They stay, unfiltered, in the
   # lakehouse table protect.formulation.competition_screen. A workbook without a Media column
   # (anything before 2026-09-27) excludes nothing.
+  # The four SCFM_5X_* media (by their names, SCFM with 5x proline, valine and/or cysteine: Sun-Young's
+  # notes do not define them; 24 wells each, first seen in ASMA_phenotype_20261113.xlsx) are left out on
+  # the same rule. Sun-Young Kim, 2026-10-21: "we should separate the inhibition data by media type".
+  # Spencer's yes, 2026-11-16 (PROTECT-56). Measured that day: no strain changes status or rank; only
+  # ASMA-4486's competition values move.
   exclude_media:
     - SCFM_10X_glucose
+    - SCFM_5X_Pro
+    - SCFM_5X_Val
+    - SCFM_5X_Pro_Val
+    - SCFM_5X_Pro_Val_Cys
 
 tissue:
   # Gwyneth's airway-tissue model, built from HER computed analyses. PRELIMINARY (she is mid-analysis) and a

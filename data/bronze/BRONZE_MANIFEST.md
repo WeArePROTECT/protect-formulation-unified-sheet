@@ -12,7 +12,9 @@ Everything keys on the canonical `ASMA_id` (see `build/lib_ids.py`).
 > source's exact path, version, on/off switch, and the gold columns it provides). This doc is the human-readable
 > narrative; the YAML is the source of truth the builders load. Keep them consistent.
 
-Last updated: 2026-09-02. Preliminary flags reflect owner notes at that date — verify against the live file.
+Last updated: 2026-11-16 (Sun-Young's sources re-pointed to his 20261113 workbook, ASMA-1448 retracted, Alex's
+amrfinder.tsv pinned to its 2026-02-25 version; PROTECT-56, PROTECT-59). Preliminary flags reflect owner notes
+at that date — verify against the live file.
 
 ---
 
@@ -20,26 +22,26 @@ Last updated: 2026-09-02. Preliminary flags reflect owner notes at that date —
 
 | Source file (exact address) | Owner | What it holds | Feeds |
 |---|---|---|---|
-| `…/current_tasks_8_2026/cassie_hemolysis_data_inventory/data/hemolysis/ASMArep_HemolysisResultsSummary_FollowUps_08122026.xlsx` | Cassandra Reyes (departed 2026-08-13) | α/β hemolysis at 24/48/72 h per isolate (base sheet, 1,638 rows) **plus a `Follow Up Results` sheet: 144 re-screen rows / 143 isolates, run 2026-07-21 and 07-28, carrying freezer `Vial_box_id` / `Vial_location_id`**. **2 base rows (ASMA-4467, FREP5 B9) dropped since 2026-10-01** via `protect_lakehouse_pipeline/datasets/phenotype/retractions.csv`: the stock in that well was the wrong strain (PROTECT-34) | `silver_hemolysis` |
+| `…/current_tasks_8_2026/cassie_hemolysis_data_inventory/data/hemolysis/ASMArep_HemolysisResultsSummary_FollowUps_08122026.xlsx` | Cassandra Reyes (departed 2026-08-13) | α/β hemolysis at 24/48/72 h per isolate (base sheet, 1,638 rows) **plus a `Follow Up Results` sheet: 144 re-screen rows / 143 isolates, run 2026-07-21 and 07-28, carrying freezer `Vial_box_id` / `Vial_location_id`**. **2 base rows (ASMA-4467, FREP5 B9) dropped since 2026-10-01** via `protect_lakehouse_pipeline/datasets/phenotype/retractions.csv`: the stock in that well was the wrong strain (PROTECT-34). **2 more (ASMA-1448, FREP6 E10) since 2026-11-16**, a wrong stock (PROTECT-59) | `silver_hemolysis` |
 | ~~`/usr2/people/protect/Arkin_Lab/hilzinger/hemolysis/ASMArep_HemolysisResultsSummary_063026_ASMAid.xlsx`~~ | Cassandra Reyes (via Jake) | **SUPERSEDED 2026-08-12** by the row above, which contains this sheet byte-identically. Retained for audit. | — |
 | `/usr2/people/protect/Arkin_Lab/hilzinger/hemolysis/cassie rep plate_well_sorted.xlsx` | Cassandra Reyes | Rep-plate w/ curated Strain Group / Representative / Genus / Species (306 rows) | interim taxonomy (now superseded by Alex's gtdbtk/mash below) |
 | `/usr2/people/protect/Arkin_Lab/hilzinger/hemolysis/HemolysisScreenPlateManifests.xlsx` | Cassandra Reyes | Plate→well layout maps | provenance only |
-| `/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype/ASMA_phenotype_20260929.xlsx` → sheet `Antibiotic_resistance_v2` | Sun-Young Kim (he/him) | Measured abx growth-under-drug for 6 antibiotics + ΔOD600 QC (2,346 rows, measured 2026-10-01) | `silver_amr_measured` |
-| `/usr2/people/alex.styer/protect/ASMA/amrfinder.tsv` | Alex Styer | Predicted AMR genes, one row per gene per isolate (~34k rows) | `silver_amr_genomic` |
+| `/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype/ASMA_phenotype_20261113.xlsx` → sheet `Antibiotic_resistance_v2` | Sun-Young Kim (he/him) | Measured abx growth-under-drug for 6 antibiotics + ΔOD600 QC (2,346 rows, measured 2026-11-16). **3 rows (ASMA-1448) dropped** via the same `retractions.csv`, matched on asma_id: a wrong stock his workbook still carries (PROTECT-59) | `silver_amr_measured` |
+| `…/current_tasks_11_2026/syk_phenotype_20261029/data/amrfinder_20260225/amrfinder.tsv` (**pinned copy**, 2026-11-16) | Alex Styer | Predicted AMR genes, one row per gene per isolate (34,082 rows). **The 2026-02-25 version of** `/usr2/people/alex.styer/protect/ASMA/amrfinder.tsv`, the one behind the live lakehouse: Alex re-ran it 2026-11-10 (36,151 rows, 4 new columns), and Spencer chose to keep the live version for the PROTECT-56 load. Provenance: `PROVENANCE.md` beside the copy. PROTECT-61 re-points this | `silver_amr_genomic` |
 | `/usr2/people/alex.styer/protect/ASMA/metaVF.tsv` | Alex Styer | Predicted virulence factors (sibling of AMR; optional safety input) | `silver_amr_genomic` (virulence add-on) |
 
 ## VIABILITY gate
 
 | Source | Owner | Holds | Feeds |
 |---|---|---|---|
-| `/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype/ASMA_phenotype_20260929.xlsx` → sheet `Growth_endpoint` | SYK | SCFM_72 / SCFM_mucin_0.5_72 grow-no-grow + BHIS/No_Carbon controls (2,357 rows, measured 2026-10-01) | `silver_growth_endpoint` |
-| `/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype/ASMA_phenotype_20260929.xlsx` → sheet `Growth_Curve_single_96` | SYK | 96-well single-carbon growth curves, cyc=10 min (5,082 rows, measured 2026-10-01) | `silver_growth_curves` |
+| `/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype/ASMA_phenotype_20261113.xlsx` → sheet `Growth_endpoint` | SYK | SCFM_72 / SCFM_mucin_0.5_72 grow-no-grow + BHIS/No_Carbon controls (2,351 rows, measured 2026-11-16). **3 rows (ASMA-1448) dropped** via `retractions.csv`, matched on asma_id (PROTECT-59) | `silver_growth_endpoint` |
+| `/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype/ASMA_phenotype_20261113.xlsx` → sheet `Growth_Curve_single_96` | SYK | 96-well single-carbon growth curves, cyc=10 min (6,708 rows, measured 2026-11-16) | `silver_growth_curves` |
 
 ## COMPETITION gate
 
 | Source | Owner | Holds | Feeds |
 |---|---|---|---|
-| `/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype/ASMA_phenotype_20260929.xlsx` → sheet `Competition` (**Standard conditions only, `SCFM_10X_glucose` wells excluded**) | SYK | Inhibition of PA reporter by 1–5-member SynComs (30,536 rows, measured 2026-10-01) | `silver_competition` + `formulations` |
+| `/usr2/people/protect/Arkin_Lab/SYK/ASMA_phenotype/ASMA_phenotype_20261113.xlsx` → sheet `Competition` (**Standard conditions only; `SCFM_10X_glucose` and, since 2026-11-16, the four `SCFM_5X_*` media excluded**) | SYK | Inhibition of PA reporter by 1–5-member SynComs (34,303 rows, measured 2026-11-16) | `silver_competition` + `formulations` |
 
 ## TISSUE gate  *(2026-07-21 — Gwyneth's airway-tissue model; PRELIMINARY, supplementary, NON-gating)*
 
@@ -59,7 +61,7 @@ Full audit trail (every number → her file/sheet): `docs/tissue_provenance_and_
 
 | Source | Owner | Holds | Feeds |
 |---|---|---|---|
-| `/usr2/people/protect/Arkin_Lab/SYK/old/ASMA_list.xlsx` | SYK | Canonical isolate universe + stock location (3,972 rows) | `identity_spine` (rows) |
+| `/usr2/people/protect/Arkin_Lab/SYK/old/ASMA_list.xlsx` | SYK | Canonical isolate universe + stock location + growth media (3,972 rows). Sun-Young's new master list (`SYK/ASMA_stock_list/ASMA_original_20261113.xlsx`, 5,061 isolates) has no growth-media column; he answered 2026-11-16 that BHIS is now the standard growth medium for every ASMA isolate, and Spencer chose to move the sheet to the new list as a follow-up after the PROTECT-56 load. The lakehouse's `protect.reference.asma_stock_list` loads the new list now | `identity_spine` (rows) |
 | `/usr2/people/alex.styer/protect/ASMA/gtdbtk/gtdbtk-summary.tsv` | Alex Styer | GTDB taxonomy; `sample_id` = ASMA_id → `classification` lineage (~5,719 assembly rows; dedup per isolate) | `identity_spine` (species/genus) |
 | `/usr2/people/alex.styer/protect/ASMA/mash/clusters.csv` | Alex Styer | **Canonical strain groups**: genome(ASMA_id) → cluster + is_representative (4,371 rows) | `identity_spine` (strain grain + representative) |
 | `/usr2/people/alex.styer/protect/ASMA/gtdbtk/assembly-manifest.tsv` | Alex Styer | `genome_id` (`ASMA-###__assembler`) → `sample_id` (ASMA_id) | ID reconciliation reference |
