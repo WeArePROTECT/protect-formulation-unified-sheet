@@ -40,7 +40,7 @@ AMRFinderPlus genes (Alex) · `data_sources.yaml` keys `hemolysis`, `amr_measure
 | `hemolysis_beta` | Does it break down red blood cells (beta-hemolysis) | Cassie's blood-agar screen; worst-case across the strain's isolates (Y if any isolate or timepoint was positive) | `Y` / `N` / blank (not determined). Beta-hemolysis is the main "could harm the patient" flag |
 | `hemolysis_concern` | Simple safety flag | `TRUE` when `hemolysis_beta` is Y | TRUE / FALSE |
 | `amr_resistance_count_prov` | How many of 6 antibiotics it resists (measured) | Sun-Young's `Antibiotic_resistance_v2`; a drug counts as resisted if growth-under-drug is at least the cutoff (default 50%). Worst-case across isolates | 0 to 6. `_prov` = provisional cutoff, team sets it |
-| `amr_gene_count` | Number of resistance genes in its genome | Alex's AMRFinder (AMR-type elements); worst-case across isolates | integer. A genomic complement to the measured AMR |
+| `amr_gene_count` | Number of resistance genes in its genome | Alex's AMRFinder (AMR-type elements; point mutations only when `safety.amr_genomic.count_point_mutations` in `config/thresholds.yaml` is true, false since 2026-11-19, as Alex Styer asked: point mutations are a separate dataset); worst-case across isolates | integer. A genomic complement to the measured AMR. A screened isolate with nothing found reads 0, never blank |
 
 ## Viability (can we grow and make it)
 **Source:** SCFM growth-endpoint screen (Sun-Young) · `data_sources.yaml` key `growth_endpoint` · rationale:

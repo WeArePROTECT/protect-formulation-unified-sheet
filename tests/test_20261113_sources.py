@@ -12,9 +12,9 @@ test_20261113_sources.py -- the rules that arrived with Sun-Young Kim's ASMA_phe
    passes the gates as UNTESTED (`missing: pass`), not as safe.
 3. MEDIA. The four SCFM_5X_* media are left out of every score, as SCFM_10X_glucose is (Sun-Young,
    2026-10-21: "separate the inhibition data by media type"; Spencer's yes 2026-11-16).
-4. AMR GENOMIC. Alex Styer's amrfinder.tsv is read from a pinned copy of its 2026-02-25 version, the one
-   behind the live lakehouse (Spencer, 2026-11-16: "Keep live version"); his 2026-11-10 rerun is
-   PROTECT-61's to load, which re-points this source and updates this test.
+4. AMR GENOMIC. Alex Styer's amrfinder.tsv is read from a pinned copy. For the PROTECT-56 load it was the
+   2026-02-25 version (Spencer, 2026-11-16: "Keep live version"); since 2026-11-19 it is his 2026-11-10 rerun,
+   the version behind the live lakehouse since 2026-11-18 (PROTECT-61, which re-pointed it and this test).
 
 The config and library tests need nothing built; the output tests read data/ and skip if it is not built.
 """
@@ -34,7 +34,7 @@ import lib_retractions                    # noqa: E402
 SILVER = os.path.join(ROOT, "data", "silver")
 GOLD = os.path.join(ROOT, "data", "gold")
 WORKBOOK = "ASMA_phenotype_20261113.xlsx"
-PINNED_AMR_MD5 = "0d3b130f12405e71a102d4248357a250"   # amrfinder.tsv as of 2026-02-25 (PROVENANCE.md)
+PINNED_AMR_MD5 = "8b14cad4108db859f1c6273fae068900"   # amrfinder.tsv as of 2026-11-10 (PROVENANCE.md; PROTECT-61)
 FIVE_X = {"SCFM_5X_Pro", "SCFM_5X_Val", "SCFM_5X_Pro_Val", "SCFM_5X_Pro_Val_Cys"}
 HEADER = ["source_file", "sheet", "asma_id", "plate", "well", "expected_rows", "reason", "requested_by",
           "requested_on", "approved_by", "approved_on", "ticket", "match_on"]
@@ -76,9 +76,9 @@ class TestConfig(unittest.TestCase):
         self.assertIn("SCFM_10X_glucose", ex)
         self.assertTrue(FIVE_X <= ex, f"missing: {sorted(FIVE_X - ex)}")
 
-    def test_amr_genomic_reads_the_pinned_2026_02_25_copy(self):
+    def test_amr_genomic_reads_the_pinned_2026_11_10_copy(self):
         p = source("amr_genomic")["path"]
-        self.assertTrue(p.endswith("/data/amrfinder_20260225/amrfinder.tsv"), p)
+        self.assertTrue(p.endswith("/data/amrfinder_20261110/amrfinder.tsv"), p)
         with open(p, "rb") as fh:
             self.assertEqual(hashlib.md5(fh.read()).hexdigest(), PINNED_AMR_MD5)
 

@@ -126,14 +126,14 @@ sources:
   amr_genomic:
     enabled: true
     owner: "Alex Styer"
-    # PINNED 2026-11-16 to the 2026-02-25 version, the one behind the live lakehouse
-    # (protect.genome_analysis.isolate_amr_genes and protect.curated.silver_amr_genomic). Alex re-ran
-    # AMRFinderPlus on 2026-11-10 and overwrote /usr2/people/alex.styer/protect/ASMA/amrfinder.tsv, adding
-    # four columns this sheet's no-hit detector does not yet handle. Spencer, 2026-11-16, for the PROTECT-56
-    # load: "Keep live version". The copy, its md5 and why: PROVENANCE.md beside it. PROTECT-61 re-points this
-    # at Alex's live file when it loads his rerun.
-    path: "/usr2/people/protect/Arkin_Lab/sjlong/current_tasks_11_2026/syk_phenotype_20261029/data/amrfinder_20260225/amrfinder.tsv"
-    version: "Alex ASMA amrfinder (AMRFinderPlus), 2026-02-25 version, pinned 2026-11-16"
+    # PINNED 2026-11-19 (PROTECT-61) to Alex's 2026-11-10 rerun, the version behind the live
+    # protect.genome_analysis.isolate_amr_genes (loaded 2026-11-18). Alex, 2026-11-18: it "should be considered
+    # the current standard", and it "may get updated again ... once I've got more hybrid assemblies built", so
+    # this reads a pinned copy (md5 8b14cad4108db859f1c6273fae068900; PROVENANCE.md beside it): his next rerun changes the sheet
+    # only when a refresh re-points this on purpose. Before: the 2026-02-25 copy the PROTECT-56 load used
+    # (Spencer, 2026-11-16: "Keep live version"). The no-hit detector handles his four new columns since 2026-11-19.
+    path: "/usr2/people/protect/Arkin_Lab/sjlong/current_tasks_11_2026/amr_refresh_20261110/data/amrfinder_20261110/amrfinder.tsv"
+    version: "Alex ASMA amrfinder (AMRFinderPlus), 2026-11-10 rerun, pinned 2026-11-19"
     consumed_by: silver_amr_genomic
     provides: [amr_gene_count]
 

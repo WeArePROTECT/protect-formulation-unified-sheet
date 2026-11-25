@@ -132,5 +132,68 @@ class TestAgainstSource(unittest.TestCase):
         self.assertEqual(extra, set(), msg=f"silver rows with no source isolate: {sorted(extra)[:5]}")
 
 
+# ---- since 2026-11-19 (PROTECT-61): Alex's 2026-11-10 compile -------------------------------------------
+_PROV = {"assembly_type": "short-read", "assembler": "spades", "amrfinder_organism": "none",
+         "run_mode": "adopted-legacy"}
+
+
+class TestProvenanceColumns(unittest.TestCase):
+    """Data-free: his four provenance columns are FILLED on a no-hit row and must not hide it."""
+
+    def test_placeholder_with_filled_provenance_is_a_placeholder(self):
+        self.assertTrue(G.is_no_hit_placeholder({**_PLACEHOLDER, **_PROV}))
+
+    def test_real_hit_with_provenance_is_not_a_placeholder(self):
+        self.assertFalse(G.is_no_hit_placeholder({**_REAL, **_PROV}))
+
+    def test_provenance_alone_does_not_make_a_placeholder(self):
+        self.assertFalse(G.is_no_hit_placeholder({"ASMA_id": "ASMA-1", **_PROV}))
+
+
+class TestPointMutationSwitch(unittest.TestCase):
+    """Data-free: config/thresholds.yaml safety.amr_genomic.count_point_mutations decides the gene count."""
+    ROWS = [
+        {"ASMA_id": "ASMA-7", "Type": "AMR", "Subtype": "AMR", "Class": "BETA-LACTAM", **_PROV},
+        {"ASMA_id": "ASMA-7", "Type": "AMR", "Subtype": "POINT", "Class": "QUINOLONE", **_PROV},
+        {"ASMA_id": "ASMA-7", "Type": "STRESS", "Subtype": "METAL", "Class": "", **_PROV},
+        {"ASMA_id": "ASMA-8", "Element symbol": "NA", "Type": "NA", "Subtype": "NA", "Class": "NA", **_PROV},
+    ]
+
+    def test_genes_only(self):
+        a = G.aggregate(self.ROWS, count_point_mutations=False)
+        self.assertEqual((a["ASMA-7"]["amr"], a["ASMA-7"]["total"], a["ASMA-7"]["classes"]), (1, 3, {"BETA-LACTAM"}))
+        self.assertEqual((a["ASMA-8"]["amr"], a["ASMA-8"]["total"]), (0, 0))   # screened, nothing found: zeros
+
+    def test_point_mutations_counted(self):
+        a = G.aggregate(self.ROWS, count_point_mutations=True)
+        self.assertEqual((a["ASMA-7"]["amr"], a["ASMA-7"]["total"]), (2, 3))
+        self.assertEqual(a["ASMA-7"]["classes"], {"BETA-LACTAM", "QUINOLONE"})
+
+    def test_the_switch_is_a_boolean_and_its_documented_default(self):
+        v = G.CFG["safety"]["amr_genomic"]["count_point_mutations"]
+        self.assertIsInstance(v, bool)
+        # False since 2026-11-19: genes only, the column's meaning before the rerun. Alex Styer, 2026-11-19: "Let's
+        # leave the point mutations as a separate dataset (complementary to the original)." If you flip it on
+        # purpose, update this line and say why in the commit.
+        self.assertIs(v, False)
+
+
+@unittest.skipUnless(HAVE_SRC and os.path.exists(SILVER), "amrfinder source or silver table unavailable")
+class TestGeneCountAgainstSource(unittest.TestCase):
+    """Re-derive amr_gene_count from the raw file without the builder's aggregate(), under the configured switch."""
+
+    def test_amr_gene_count_matches_the_source(self):
+        count_points = G.CFG["safety"]["amr_genomic"]["count_point_mutations"]
+        built = {r["asma_id"]: r for r in H.read_delimited(SILVER, ",")}
+        want = defaultdict(int)
+        for row in read_delimited(G.SRC):
+            aid = normalize_asma_id(row.get("ASMA_id"))
+            if aid and row.get("Type", "").strip() == "AMR" and (
+                    count_points or row.get("Subtype", "").strip() != "POINT"):
+                want[aid] += 1
+        for aid, r in built.items():
+            self.assertEqual(int(r["amr_gene_count"]), want.get(aid, 0), msg=aid)
+
+
 if __name__ == "__main__":
     unittest.main()
