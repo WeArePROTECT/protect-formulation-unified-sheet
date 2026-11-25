@@ -48,9 +48,9 @@ AMRFinderPlus genes (Alex) · `data_sources.yaml` keys `hemolysis`, `amr_measure
 
 | Column | What it means | How it is derived | Values |
 |---|---|---|---|
-| `grows_scfm` | Does it grow in SCFM (lung-mimic fluid) | Sun-Young's `Growth_endpoint`, background-subtracted; Y if corrected SCFM OD is at least the cutoff (default 0.1) and above the no-carbon control; blank if it did not grow even in rich media (cannot tell). Best-case across isolates | `Y` / `N` / blank (inconclusive) |
-| `scfm_od` | How well it grows in SCFM | Background-subtracted OD600 at 72h | number, roughly 0 to 1.2 (higher = grows better) |
-| `mucin_lift` | Growth boost from adding mucin (a prebiotic signal) | SCFM-plus-mucin OD minus SCFM OD | number; positive = mucin helps this strain grow |
+| `grows_scfm` | Does it grow in SCFM (lung-mimic fluid) | Sun-Young's `Growth_endpoint`, background-subtracted; an isolate's replicate wells are summarised by their median (`viability.replicate_aggregation`; the mean before 2026-11-24), so with 3 wells at least 2 must grow; Y if that SCFM OD is at least the cutoff (default 0.1) and above the no-carbon control; blank if it did not grow even in rich media (cannot tell). Best-case across isolates | `Y` / `N` / blank (inconclusive) |
+| `scfm_od` | How well it grows in SCFM | Background-subtracted OD600 at 72h, the median of the isolate's replicate wells (same setting); the highest across the strain's isolates | number, roughly 0 to 1.2 (higher = grows better) |
+| `mucin_lift` | Growth boost from adding mucin (a prebiotic signal) | SCFM-plus-mucin OD minus SCFM OD (each the median of the wells); the highest across the strain's isolates | number; positive = mucin helps this strain grow |
 
 ## Competition (does it beat PA)
 **Source:** SynCom competition screen (Sun-Young) · `data_sources.yaml` key `competition` · rationale:

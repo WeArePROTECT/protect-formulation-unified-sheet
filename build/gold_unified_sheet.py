@@ -279,6 +279,7 @@ def _about_lines():
         "tell us what you want and we recompute the whole card in minutes. Current settings:",
         f"    - AMR 'resistant' cutoff      : >= {c['safety']['amr_measured']['resistance_cutoff_pct']}% growth under the drug",
         f"    - Grows-in-SCFM cutoff        : >= {c['viability']['scfm_grow_min_od']} OD600 (background-subtracted)",
+        f"    - Growth replicate value      : {c['viability']['replicate_aggregation']} of the blank-subtracted wells",
         f"    - Competition replicate value : {c['competition']['replicate_aggregation']} (of repeat wells)",
         f"    - Competition report bar      : >= {c['competition']['report_bar_pct']}% knock-down of PA",
         f"    - Strain rollup              : safety = {c['gold']['safety_aggregation']}, competition = {c['gold']['competition_aggregation']}",

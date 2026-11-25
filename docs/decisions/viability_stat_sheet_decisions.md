@@ -40,8 +40,48 @@ candidate prebiotic responder. (177 strains show a lift >= 0.1 OD.)
 Replicates for one isolate average (corrected); on the gold card a strain "grows in SCFM" if any of its
 isolates does (best-case, matching the competition rollup). Raw ODs are kept so any cutoff re-derives.
 
+**Superseded in part, 2026-11-24:** the replicate summary is now a team setting, median by default (D6). The
+best-case strain rollup stands.
+
+### D6: Replicate summary is a team setting, median by default (2026-11-24)
+`viability.replicate_aggregation` in `config/thresholds.yaml` (`median` or `mean`) says how an isolate's
+blank-subtracted wells collapse to one number, for every condition: SCFM, SCFM+mucin, the BHIS rich-media check
+and the no-carbon control. Default **median**. The rest is unchanged: each well minus the MEAN of its date's BLANK
+wells (D1), floored at 0; the 0.1 OD cutoff and the no-carbon comparison (D2); the rich-media check (D3); the
+best-case strain rollup (D5). The call still compares the summary rounded to 3 decimals, as before, so a median of
+0.0996 counts as 0.1.
+
+**Why:** 754 of the 762 isolates have 3 wells, and with 3 wells the mean lets one odd well decide the call: wells
+of about 0.03, 0.50 and 0.03 average 0.19, a "grows", though 2 of the 3 did not grow. The median reaches 0.1
+exactly when at least 2 of the 3 wells do. The same holds for the rich-media check: a strain passes it when 2 of 3
+BHIS wells grew, not when one well lifts the average. Spencer's decision L, 2026-11-24, on PROTECT-60 (the ASMA
+dashboard data contract, part 2, section 7): the median "for now", so this sheet and the dashboard show one
+number; the science is to be checked with Gwyn.
+
+**Options considered:** the mean (the rule before; one high well can make a "grows"); the median (chosen); the
+number of wells at or above the cutoff (the same call as the median with 3 wells, but no OD value to show).
+
+**Effect at the switch** (SYK's 20261113 workbook, the build behind curated export `curated_export_20261124_171929`;
+diff in `sjlong/current_tasks_11_2026/growth_median_20261124/`):
+- `grows_scfm`: 26 of 762 isolates change. 17 go from Y to N: at most one of their 3 wells reached the cutoff,
+  and that well carried the mean over it (for example 0.44, 0.01 and 0.01; a few are borderline, such as 0.099,
+  0.091 and 0.111). 6 go from N to inconclusive: only 1 of their 3 BHIS wells grew. 3 go from
+  inconclusive to N: 2 of 3 BHIS wells grew, and a third at 0 had held the mean under 0.1. Totals: Y 96 to 79,
+  N 572 to 586, inconclusive 94 to 97.
+- `grows_scfm_mucin`: 22 change (10 Y to N, 3 N to Y, and the same 9 rich-media moves); Y 244 to 237.
+- Gold card: `grows_scfm` changes for 25 strain groups, 13 of them through an isolate that is not the genomic
+  representative; `scfm_od` changes for 484 groups and `mucin_lift` for 594, by more than 0.05 OD for 19 and 24.
+- Shortlist: no status or rank moves (98 ranked, 209 unscreened, 432 excluded). The `grows_in_scfm` value changes
+  for 23 groups, one of them ranked: group 563 (rank 43) goes from Y to N through its assay isolate ASMA-3318.
+
+**Revisit if:** the bench says a single high well is usually real patchy growth rather than contamination or a
+pipetting slip (a question for Gwyn and Sun-Young), or the replicate count changes (with 2 wells the median is the
+mean). Going back is one line in the config.
+
 ## Not decided here
 The grow/no-grow **cutoff value** and QC floor are team-owned (config). We ship 0.1 as a sensible default.
+The replicate summary is team-owned too (`viability.replicate_aggregation`, D6).
 
 ## Change log
 - 2026-07-15 — initial version (D1–D5), created alongside `silver_growth_endpoint.py`.
+- 2026-11-24: D6, the replicate summary becomes a team setting, median by default (Spencer's decision L on PROTECT-60; PROTECT-78, epic PROTECT-76). D5's mean is superseded.
